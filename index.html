@@ -48,13 +48,20 @@
     <section id="weather" class="section">
       <span class="eyebrow">LIVE CONDITIONS</span><h2>Weather, with <em>context.</em></h2>
       <p>Start typing and choose a city. Its current conditions and two-year local temperature history will rebuild the energy dashboard.</p>
-      <form id="weather-form" class="search"><input id="city" value="Denver, Colorado, United States" list="city-suggestions" autocomplete="off" aria-label="City" placeholder="Start typing a city"><datalist id="city-suggestions"></datalist><button class="pill dark">Load city data →</button></form>
+      <form id="weather-form" class="search"><div class="city-picker"><input id="city" value="" autocomplete="off" aria-label="City" placeholder="Start typing a city, e.g. Denver"><div id="city-suggestions" class="city-suggestions" hidden></div></div><button class="pill dark">Load city data →</button></form>
       <p id="city-status" class="city-status">Choose the city where the electricity was used, then import or enter your real usage records.</p>
       <p id="weather-error" class="error" hidden></p>
       <article id="weather-result" class="current-weather">
         <div><small id="weather-place">DENVER</small><strong id="weather-temp">—°</strong><span id="weather-description">Search to load current conditions</span></div>
         <div class="facts"><span><small>Feels like</small><b id="weather-feels">—</b></span><span><small>Humidity</small><b id="weather-humidity">—</b></span><span><small>Wind</small><b id="weather-wind">—</b></span><span><small>High / low</small><b id="weather-highlow">—</b></span></div>
       </article>
+      <div id="city-energy" class="city-energy" hidden>
+        <article><small>FREE CITY ENERGY API</small><strong id="solar-potential">—</strong><span>solar energy reaching each square meter today</span></article>
+        <article><small>7-DAY SOLAR OUTLOOK</small><strong id="solar-week">—</strong><span>weather-based solar resource, not household consumption</span></article>
+        <article><small>ENERGY CONNECTION</small><strong id="climate-load">—</strong><span>weather pressure on heating or cooling demand</span></article>
+        <article><small>EIA RESIDENTIAL PRICE</small><strong id="eia-rate">—</strong><span id="eia-rate-note">Latest available state average</span></article>
+        <article><small>EIA RESIDENTIAL USAGE</small><strong id="eia-usage">—</strong><span id="eia-usage-note">Statewide average per customer</span></article>
+      </div>
     </section>
 
     <section id="analytics" class="section cream">
