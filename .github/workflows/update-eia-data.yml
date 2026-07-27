@@ -23,7 +23,7 @@ jobs:
       - name: Publish updated data
         shell: bash
         run: |
-          if git diff --quiet -- data/eia-state-energy.json; then
+          if [ -z "$(git status --porcelain -- data/eia-state-energy.json)" ]; then
             echo "EIA data is already current."
             exit 0
           fi
