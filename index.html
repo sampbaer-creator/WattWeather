@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="pages-extra.css">
 </head>
 <body>
   <header>
@@ -46,8 +47,9 @@
 
     <section id="weather" class="section">
       <span class="eyebrow">LIVE CONDITIONS</span><h2>Weather, with <em>context.</em></h2>
-      <p>Search any city. This Pages edition uses Open-Meteo, so no private API key is exposed in your browser.</p>
-      <form id="weather-form" class="search"><input id="city" value="Denver" aria-label="City" placeholder="Enter a city"><button class="pill dark">Get weather →</button></form>
+      <p>Start typing and choose a city. Its current conditions and two-year local temperature history will rebuild the energy dashboard.</p>
+      <form id="weather-form" class="search"><input id="city" value="Denver, Colorado, United States" list="city-suggestions" autocomplete="off" aria-label="City" placeholder="Start typing a city"><datalist id="city-suggestions"></datalist><button class="pill dark">Load city data →</button></form>
+      <p id="city-status" class="city-status">Energy analytics currently use Denver climate data and demo household assumptions.</p>
       <p id="weather-error" class="error" hidden></p>
       <article id="weather-result" class="current-weather">
         <div><small id="weather-place">DENVER</small><strong id="weather-temp">—°</strong><span id="weather-description">Search to load current conditions</span></div>
@@ -57,7 +59,7 @@
 
     <section id="analytics" class="section cream">
       <span class="eyebrow">BUSINESS INTELLIGENCE</span><h2>Energy patterns, <em>made visible.</em></h2>
-      <p>Two years of deterministic synthetic data run entirely in your browser.</p>
+      <p id="analytics-provenance">Two years of weather-driven synthetic energy data run entirely in your browser.</p>
       <div id="kpis" class="kpis"></div>
       <div class="dashboard">
         <article class="chart wide"><h3>Energy usage over time</h3><small>Most recent 90 days · kWh</small><div id="usage-chart" class="bars"></div></article>
@@ -68,17 +70,17 @@
 
     <section id="energy" class="section">
       <span class="eyebrow">LOCAL DATA</span><h2>Your energy <em>timeline.</em></h2>
-      <div class="toolbar"><strong>Recent records</strong><span>SYNTHETIC DEMO DATA</span></div>
+      <div class="toolbar"><strong id="records-title">Recent Denver records</strong><span>WEATHER-DRIVEN SYNTHETIC ENERGY</span></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Weather</th><th>Usage</th><th>Cost</th><th>Rate</th></tr></thead><tbody id="energy-rows"></tbody></table></div>
     </section>
 
     <section id="forecast" class="section dark-section">
       <span class="eyebrow">EXPLAINABLE MODEL</span><h2>Estimate with <em>honesty.</em></h2>
       <p>This browser demonstration reports a transparent temperature-based baseline. The full .NET project contains the multivariable regression engine and chronological validation workflow.</p>
-      <div class="model"><span>ESTIMATES, NOT GUARANTEES</span><h3>Model card</h3><p>Predictions are planning estimates. Synthetic performance does not imply real-world accuracy, and changes in occupants, appliances, rates, or behavior can reduce reliability.</p><a href="https://github.com/sampbaer-creator/WeatherControl/blob/main/docs/model-card.md">Read the full model card →</a></div>
+      <div class="model"><span>ESTIMATES, NOT GUARANTEES</span><h3>Model card</h3><p>Predictions are planning estimates. Synthetic performance does not imply real-world accuracy, and changes in occupants, appliances, rates, or behavior can reduce reliability.</p><a href="https://github.com/sampbaer-creator/WattWeather/blob/main/docs/model-card.md">Read the full model card →</a></div>
     </section>
   </main>
-  <footer><strong>WattWeather</strong><span>Built by Samuel Baer with .NET, C#, SQLite, JavaScript, and explainable analytics.</span><a href="https://github.com/sampbaer-creator/WeatherControl">View source ↗</a></footer>
+  <footer><strong>WattWeather</strong><span>Built by Samuel Baer with .NET, C#, SQLite, JavaScript, and explainable analytics.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
   <script src="pages.js"></script>
 </body>
 </html>
