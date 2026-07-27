@@ -28,6 +28,8 @@ WattWeather is a portfolio project with two intentionally separate experiences:
 
 The public dashboard does not pretend state averages are household measurements. Personal records remain in browser-local storage and are never uploaded to this repository.
 
+Questions and improvement ideas are welcome in [GitHub Discussions](https://github.com/sampbaer-creator/WattWeather/discussions). If WattWeather is useful to you, starring the repository helps other learners and contributors discover it.
+
 ## Public Explore dashboard
 
 ![Public weather and electricity analytics](docs/screenshots/public-analytics.png)
@@ -201,6 +203,7 @@ This project began as a basic .NET MAUI assignment that searched OpenWeather by 
 - [Forecast model card](docs/model-card.md)
 - [Power BI and Azure roadmap](docs/bi-azure-roadmap.md)
 - [Roadmap, lessons learned, and resume bullets](docs/roadmap.md)
+- [Contribution guide](CONTRIBUTING.md)
 
 ## Current limitations
 
