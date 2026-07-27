@@ -1,141 +1,220 @@
+<div align="center">
+
 # WattWeather
 
-Weather and household energy intelligence built with C#, .NET MAUI, Blazor, SQLite, statistical analysis, and explainable forecasting.
+### Weather and electricity data people can actually understand
 
-> **Status:** Active portfolio project. The original ZIP-code weather assignment has been rebuilt around shared domain and infrastructure libraries. The repository includes a Windows MAUI client and a responsive Blazor web application.
+[![Live site](https://img.shields.io/badge/Live_Site-Open_WattWeather-013e37?style=for-the-badge)](https://sampbaer-creator.github.io/WattWeather/)
+[![Pages](https://img.shields.io/github/deployments/sampbaer-creator/WattWeather/github-pages?label=GitHub%20Pages)](https://sampbaer-creator.github.io/WattWeather/)
+[![Build and test](https://github.com/sampbaer-creator/WattWeather/actions/workflows/ci.yml/badge.svg)](https://github.com/sampbaer-creator/WattWeather/actions/workflows/ci.yml)
+[![EIA data](https://github.com/sampbaer-creator/WattWeather/actions/workflows/update-eia-data.yml/badge.svg)](https://github.com/sampbaer-creator/WattWeather/actions/workflows/update-eia-data.yml)
 
-## Why this project exists
+WattWeather combines live city weather, public electricity statistics, and optional personal utility records to explain how temperature relates to electricity use and cost.
 
-Weather is one of the largest drivers of household electricity demand, but utility records rarely explain *why* usage changed. WattWeather links daily energy records to weather observations, calculates decision-friendly KPIs, flags unusual days, and estimates future usage without presenting predictions as guarantees.
+**[Explore public data](https://sampbaer-creator.github.io/WattWeather/)** · **[Analyze your energy](https://sampbaer-creator.github.io/WattWeather/energy.html)** · **[View the model card](docs/model-card.md)**
 
-## Highlights
+</div>
 
-- Live weather by US ZIP code or city through OpenWeather
-- Strongly typed JSON mapping, `HttpClient`, async/await, cancellation, timeouts, and friendly failure states
-- Local SQLite relational database with locations, households, weather, energy, and settings
-- Real energy input through utility CSV imports or manual daily records in the GitHub Pages app
-- Automatic date-and-location matching to Open-Meteo historical weather
-- City autocomplete plus Open-Meteo solar-resource data and securely refreshed EIA state electricity statistics
-- Separate public Explore dashboard and private Your Energy workspace
-- Total, average, median, range, standard deviation, cost, degree-day, correlation, seasonal, and month-over-month analytics
-- Explainable IQR anomaly detection
-- Regularized multiple linear regression with chronological 80/20 validation
-- MAE, RMSE, and R² model evaluation
-- Responsive web landing page, analytics dashboard, weather search, energy table, and model card
-- .NET MAUI MVVM client with dependency injection and no business logic in page code-behind
-- Automated tests that do not require a live API
+![WattWeather public dashboard](docs/screenshots/explore-hero.png)
 
-## Screenshots
+## What WattWeather does
 
-Add final captures to `docs/screenshots/` after running the projects. Suggested views: landing page, live weather, analytics dashboard, forecast model card, and MAUI client.
+WattWeather is a portfolio project with two intentionally separate experiences:
+
+| Experience | Purpose | Data |
+|---|---|---|
+| **Explore** | Understand a city through live conditions and public charts | Open-Meteo weather and solar data; EIA state electricity statistics |
+| **Your Energy** | Understand a household’s real electricity records | User-provided CSV/manual kWh and cost, matched to historical city weather |
+
+The public dashboard does not pretend state averages are household measurements. Personal records remain in browser-local storage and are never uploaded to this repository.
+
+## Public Explore dashboard
+
+![Public weather and electricity analytics](docs/screenshots/public-analytics.png)
+
+- City autocomplete with mouse and keyboard navigation
+- Current temperature, feels-like temperature, humidity, wind, daily high, and daily low
+- Seven-day high/low temperature chart
+- Seven-day solar-resource chart
+- Latest state residential electricity price
+- Latest state average monthly household electricity use
+- Ten-year EIA price and household-usage trends
+- Ten-year comparison between selected-city temperature and state residential use
+- Plain-language explanations of correlation and data limitations
+
+## Your Energy workspace
+
+![Private personal-energy workspace](docs/screenshots/your-energy.png)
+
+- Import utility CSV files or enter daily records manually
+- Store records privately in the current browser
+- Match each record to historical weather by date and selected city
+- Calculate total, average, median, minimum, maximum, and standard deviation
+- Compare personal monthly usage with the state household average
+- Visualize electricity usage over time
+- Plot temperature against kWh
+- Group average usage into understandable temperature ranges
+- Calculate heating and cooling pressure
+- Flag unusually high records with an explainable IQR method
+- Estimate usage at the current temperature after enough records exist
+- Evaluate forecasts with MAE, RMSE, and R² using a chronological test set
+
+### CSV format
+
+WattWeather accepts `date` and `kwh`; `cost` is optional.
+
+```csv
+date,kwh,cost
+2026-01-01,24.5,3.55
+2026-01-02,27.1,3.93
+```
+
+## Data sources
+
+| Source | Used for | Notes |
+|---|---|---|
+| [Open-Meteo](https://open-meteo.com/) | City search, current weather, forecasts, historical temperature, solar resource | Browser requests require no private key |
+| [U.S. EIA Open Data](https://www.eia.gov/opendata/) | State residential price, customers, and electricity sales | Refreshed by a protected GitHub Action |
+| User utility records | Personal kWh and cost | Remain in the user’s browser |
+| OpenWeather | Native .NET client weather | Key is supplied through local secrets/environment configuration |
+
+EIA annual residential sales are divided by residential customers and 12 to produce an understandable state average in kWh per household per month. A selected city’s annual temperature is used as a local climate proxy when comparing weather with state electricity use. That relationship is an association, not proof of causation.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    User[User] --> Web[Blazor Web App]
-    User --> Maui[.NET MAUI Client]
-    Web --> Core[Core Domain + Analytics]
-    Maui --> Core
-    Web --> Infra[Infrastructure]
-    Maui --> Infra
-    Infra --> SQLite[(SQLite)]
-    Infra --> OW[OpenWeather REST API]
-    Core --> Forecast[Regression + Evaluation]
+    U[User] --> P[GitHub Pages]
+    P --> X[Explore dashboard]
+    P --> Y[Your Energy workspace]
+    X --> OM[Open-Meteo API]
+    X --> EJ[Published EIA JSON]
+    GA[Scheduled GitHub Action] -->|protected API key| EIA[EIA API]
+    EIA --> GA
+    GA --> EJ
+    Y --> LS[(Browser localStorage)]
+    Y --> OM
 ```
 
+The repository also contains a layered .NET implementation:
+
 ```mermaid
-erDiagram
-    LOCATION ||--o{ WEATHER_OBSERVATION : has
-    LOCATION ||--o{ ENERGY_USAGE_RECORD : records
-    LOCATION o|--o{ HOUSEHOLD_PROFILE : defaults
-    HOUSEHOLD_PROFILE ||--o{ ENERGY_USAGE_RECORD : owns
-    WEATHER_OBSERVATION o|--o| ENERGY_USAGE_RECORD : contextualizes
-    LOCATION { int Id PK string NormalizedKey UK }
-    HOUSEHOLD_PROFILE { int Id PK int DefaultLocationId FK }
-    WEATHER_OBSERVATION { int Id PK int LocationId FK date ObservationDate }
-    ENERGY_USAGE_RECORD { int Id PK int LocationId FK int HouseholdProfileId FK int WeatherObservationId FK }
-    APPLICATION_SETTING { string Key PK string Value }
+flowchart LR
+    MAUI[.NET MAUI client] --> Core[Core models and analytics]
+    Blazor[Blazor web app] --> Core
+    MAUI --> Infra[Infrastructure services]
+    Blazor --> Infra
+    Infra --> DB[(SQLite)]
+    Infra --> OW[OpenWeather]
+    Core --> Forecast[Forecasting and evaluation]
 ```
+
+## Technology
+
+- JavaScript, HTML, and responsive CSS for the deployed GitHub Pages experience
+- C# and .NET 10
+- .NET MAUI with MVVM and dependency injection
+- Blazor
+- Entity Framework Core and SQLite
+- Strongly typed REST integration with async/await
+- GitHub Actions for CI, Pages, and protected EIA refreshes
+- xUnit and FluentAssertions
 
 ## Repository structure
 
 ```text
-OpenWeather/                         .NET MAUI Windows client
-src/WeatherEnergyAnalytics.Core/     Models, validation, statistics, forecasting
-src/WeatherEnergyAnalytics.Infrastructure/ SQLite, repositories, weather API, seeding
-src/WeatherEnergyAnalytics.Web/      Responsive Blazor web app and landing page
-src/WeatherEnergyAnalytics.ModelTrainer/ Model workflow entry point
-tests/                               Deterministic unit and integration tests
-docs/                                Data, BI, security, and model documentation
+index.html / landing.js / pages*.css       Public Explore dashboard
+energy.html / pages.js                     Private Your Energy workspace
+data/eia-state-energy.json                 Published non-sensitive EIA snapshot
+scripts/fetch-eia-data.mjs                 Protected EIA refresh process
+OpenWeather/                               .NET MAUI client
+src/WeatherEnergyAnalytics.Core/           Domain, statistics, forecasting
+src/WeatherEnergyAnalytics.Infrastructure/ SQLite, repositories, API services
+src/WeatherEnergyAnalytics.Web/            Blazor application
+tests/                                     Unit and integration tests
+docs/                                      Data, model, BI, and roadmap documentation
 ```
 
-## Run the web app
+## Run locally
 
-Requirements: .NET 10 SDK.
+### GitHub Pages version
+
+Serve the repository root with any static server:
+
+```powershell
+python -m http.server 8080
+```
+
+Open `http://localhost:8080`.
+
+### .NET web application
+
+Requires the .NET 10 SDK:
 
 ```powershell
 dotnet run --project src/WeatherEnergyAnalytics.Web
 ```
 
-The app creates `src/WeatherEnergyAnalytics.Web/App_Data/weather-energy.db` on first run. It starts empty and does not fabricate household consumption.
-
-For live weather, never place a real key in `appsettings.json`:
+The SQLite database starts empty. Configure live OpenWeather access with user secrets:
 
 ```powershell
 dotnet user-secrets init --project src/WeatherEnergyAnalytics.Web
 dotnet user-secrets set "OpenWeather:ApiKey" "YOUR_KEY" --project src/WeatherEnergyAnalytics.Web
 ```
 
-Alternatively set `OPENWEATHER_API_KEY` in the local environment. The interface never displays the full key.
-
-## Run the MAUI app
+### .NET MAUI Windows client
 
 ```powershell
 dotnet workload install maui-windows
-dotnet build OpenWeather/OpenWeather.csproj -f net10.0-windows10.0.19041.0
-dotnet run --project OpenWeather/OpenWeather.csproj -f net10.0-windows10.0.19041.0
+dotnet restore OpenWeather/OpenWeather.csproj -r win-x64
+dotnet run --project OpenWeather/OpenWeather.csproj -f net10.0-windows10.0.19041.0 -r win-x64
 ```
-
-Set `OPENWEATHER_API_KEY` before launching to enable live weather.
 
 ## Build and test
 
 ```powershell
-dotnet build src/WeatherEnergyAnalytics.Web
-dotnet test tests/WeatherEnergyAnalytics.Core.Tests
-dotnet test tests/WeatherEnergyAnalytics.Infrastructure.Tests
+dotnet build src/WeatherEnergyAnalytics.Web -c Release
+dotnet test tests/WeatherEnergyAnalytics.Core.Tests -c Release
+dotnet test tests/WeatherEnergyAnalytics.Infrastructure.Tests -c Release
 ```
 
-## Analytics definitions
+The automated suite covers input validation, calculations, anomaly behavior, forecast safeguards, SQLite initialization, and repeatable data operations without requiring live API calls.
 
-- **Estimated monthly usage/cost:** latest 30-day average multiplied by 30.
-- **Temperature correlation:** Pearson correlation between mean temperature and kWh. Association does not prove causation.
-- **HDD/CDD:** daily deviation below/above a 65°F base.
-- **Unusual usage:** values outside 1.5 × IQR. These are review candidates, not guaranteed errors.
-- **Month-over-month:** percentage change between the latest two complete monthly groups.
+## Security and privacy
 
-## Forecasting
+- No API keys are committed to the current source
+- The EIA key is stored as an encrypted GitHub Actions secret
+- Pages receives only public aggregate EIA JSON
+- Personal electricity records stay in browser-local storage
+- The full EIA key is never sent to website visitors
+- Network failures produce user-facing errors without exposing implementation details
 
-The baseline is an explainable regularized multiple linear regression using average temperature, humidity, heating/cooling degree days, home size, occupants, month, AC hours, and previous usage. Data is sorted by date and split 80/20 so evaluation occurs on later observations. The app refuses to train with fewer than 90 rows spanning six months. Predictions are labeled estimates.
+> A key from the original class assignment was previously committed. It was removed from active source and should remain revoked because Git history cannot make an exposed credential private.
 
-See [the model card](docs/model-card.md) for limitations and intended use.
+## Project background
 
-## Data provenance and security
-
-The GitHub Pages app accepts real utility CSV or manual energy records, keeps them in browser-local storage, and uses Open-Meteo to match historical weather by city and date. The .NET architecture retains an explicit synthetic-data seeder for opt-in development and tests, but it is not run automatically. A previously committed API key was removed from active code and must be revoked because deletion from the latest version does not erase Git history.
-
-The public landing page contains only city weather and aggregated public API statistics. Personal CSV imports, records, analytics, and forecasts live on the separate `energy.html` page.
-
-The EIA key is stored only as the GitHub Actions secret `energy658`. A scheduled workflow publishes non-sensitive state residential price and usage statistics to `data/eia-state-energy.json`; the key is never included in GitHub Pages. EIA statistics describe state averages, not a specific household. Open-Meteo supplies city weather and solar resource data without a browser API key.
+This project began as a basic .NET MAUI assignment that searched OpenWeather by ZIP code and displayed temperatures on a second page. It was expanded into a maintainable weather-and-electricity analytics platform to demonstrate API integration, data modeling, statistical analysis, forecasting, visualization, security, automated testing, and professional GitHub delivery.
 
 ## Documentation
 
-- [Data dictionary and SQL](docs/data-and-sql.md)
-- [Model card](docs/model-card.md)
+- [Data dictionary and SQL examples](docs/data-and-sql.md)
+- [Forecast model card](docs/model-card.md)
 - [Power BI and Azure roadmap](docs/bi-azure-roadmap.md)
-- [Roadmap, lessons, and resume bullets](docs/roadmap.md)
+- [Roadmap, lessons learned, and resume bullets](docs/roadmap.md)
 
-## License recommendation
+## Current limitations
 
-MIT is a practical choice for a public portfolio repository. Add a `LICENSE` only after confirming that this is the license you want.
+- Public EIA electricity values are state averages, not city or household meter readings
+- City temperature is a climate proxy in the state-level comparison
+- Personal forecast quality depends on record frequency, date coverage, and missing data
+- Browser-local records do not automatically synchronize across devices
+- Direct utility-account connections require a secure backend and provider authorization
+
+## Roadmap
+
+- Green Button and broader utility-export support
+- More robust CSV column mapping
+- Confidence ranges around forecasts
+- Optional encrypted account synchronization
+- Additional accessibility and end-to-end tests
+- Azure SQL and Power BI expansion

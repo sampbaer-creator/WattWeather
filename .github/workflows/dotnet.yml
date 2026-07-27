@@ -23,7 +23,7 @@ jobs:
         run: dotnet workload install maui-windows
 
       - name: Restore
-        run: dotnet restore .\OpenWeather\OpenWeather.csproj
+        run: dotnet restore .\OpenWeather\OpenWeather.csproj -r win-x64
 
       - name: Build (Windows target)
-        run: dotnet build .\OpenWeather\OpenWeather.csproj -c Release -f net10.0-windows10.0.19041.0 --no-restore
+        run: dotnet build .\OpenWeather\OpenWeather.csproj -c Release -f net10.0-windows10.0.19041.0 -r win-x64 --no-restore
