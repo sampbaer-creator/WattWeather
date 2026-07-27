@@ -1,0 +1,372 @@
+{
+  "generatedAtUtc": "2026-07-27T20:32:43.644Z",
+  "methodology": "Annual residential sales divided by residential customers and 12; prices are state residential averages.",
+  "states": {
+    "Alaska": {
+      "period": "2025",
+      "residentialPriceCents": 26.09,
+      "averageMonthlyKwh": 559.0615556130351,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Alabama": {
+      "period": "2025",
+      "residentialPriceCents": 16.1,
+      "averageMonthlyKwh": 1143.5223728950652,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Arkansas": {
+      "period": "2025",
+      "residentialPriceCents": 12.84,
+      "averageMonthlyKwh": 1067.9216461024382,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Arizona": {
+      "period": "2025",
+      "residentialPriceCents": 15.32,
+      "averageMonthlyKwh": 1019.2290124577817,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "California": {
+      "period": "2025",
+      "residentialPriceCents": 32.54,
+      "averageMonthlyKwh": 463.6094112272174,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Colorado": {
+      "period": "2025",
+      "residentialPriceCents": 15.85,
+      "averageMonthlyKwh": 673.3134257248689,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Connecticut": {
+      "period": "2025",
+      "residentialPriceCents": 29.38,
+      "averageMonthlyKwh": 694.6389247040723,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "District of Columbia": {
+      "period": "2025",
+      "residentialPriceCents": 21.94,
+      "averageMonthlyKwh": 636.3145773149085,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Delaware": {
+      "period": "2025",
+      "residentialPriceCents": 17.13,
+      "averageMonthlyKwh": 928.8263465787359,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "East North Central": {
+      "period": "2025",
+      "residentialPriceCents": 17.7,
+      "averageMonthlyKwh": 763.8501080620763,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "East South Central": {
+      "period": "2025",
+      "residentialPriceCents": 14.1,
+      "averageMonthlyKwh": 1165.3064015025773,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Florida": {
+      "period": "2025",
+      "residentialPriceCents": 15.24,
+      "averageMonthlyKwh": 1089.340070793419,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Georgia": {
+      "period": "2025",
+      "residentialPriceCents": 14.73,
+      "averageMonthlyKwh": 1081.9943427273631,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Hawaii": {
+      "period": "2025",
+      "residentialPriceCents": 40.59,
+      "averageMonthlyKwh": 509.2928305669402,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Iowa": {
+      "period": "2025",
+      "residentialPriceCents": 13.72,
+      "averageMonthlyKwh": 850.8519769749508,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Idaho": {
+      "period": "2025",
+      "residentialPriceCents": 11.82,
+      "averageMonthlyKwh": 922.3384867915364,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Illinois": {
+      "period": "2025",
+      "residentialPriceCents": 17.69,
+      "averageMonthlyKwh": 716.8529601844174,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Indiana": {
+      "period": "2025",
+      "residentialPriceCents": 16.23,
+      "averageMonthlyKwh": 950.0611959343041,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Kansas": {
+      "period": "2025",
+      "residentialPriceCents": 14.56,
+      "averageMonthlyKwh": 876.4965092495257,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Kentucky": {
+      "period": "2025",
+      "residentialPriceCents": 13.24,
+      "averageMonthlyKwh": 1122.1361038732018,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Louisiana": {
+      "period": "2025",
+      "residentialPriceCents": 12.57,
+      "averageMonthlyKwh": 1223.1355551518884,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Massachusetts": {
+      "period": "2025",
+      "residentialPriceCents": 30.48,
+      "averageMonthlyKwh": 573.8478092341612,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Middle Atlantic": {
+      "period": "2025",
+      "residentialPriceCents": 22.7,
+      "averageMonthlyKwh": 686.3592948090504,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Maryland": {
+      "period": "2025",
+      "residentialPriceCents": 19.48,
+      "averageMonthlyKwh": 944.7320469993178,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Maine": {
+      "period": "2025",
+      "residentialPriceCents": 27.78,
+      "averageMonthlyKwh": 527.4313838282338,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Michigan": {
+      "period": "2025",
+      "residentialPriceCents": 20.01,
+      "averageMonthlyKwh": 632.2682459988533,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Minnesota": {
+      "period": "2025",
+      "residentialPriceCents": 15.82,
+      "averageMonthlyKwh": 738.4459423930197,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Missouri": {
+      "period": "2025",
+      "residentialPriceCents": 13.49,
+      "averageMonthlyKwh": 1054.416753015294,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Mississippi": {
+      "period": "2025",
+      "residentialPriceCents": 14.03,
+      "averageMonthlyKwh": 1176.9220793948987,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Montana": {
+      "period": "2025",
+      "residentialPriceCents": 12.98,
+      "averageMonthlyKwh": 846.6806329921743,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Mountain": {
+      "period": "2025",
+      "residentialPriceCents": 14.41,
+      "averageMonthlyKwh": 839.2830384724895,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "North Carolina": {
+      "period": "2025",
+      "residentialPriceCents": 14.02,
+      "averageMonthlyKwh": 1034.3417727797382,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "North Dakota": {
+      "period": "2025",
+      "residentialPriceCents": 11.81,
+      "averageMonthlyKwh": 1069.4913668389227,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Nebraska": {
+      "period": "2025",
+      "residentialPriceCents": 12.34,
+      "averageMonthlyKwh": 964.2098196676183,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "New England": {
+      "period": "2025",
+      "residentialPriceCents": 28.91,
+      "averageMonthlyKwh": 602.5861874903267,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "New Hampshire": {
+      "period": "2025",
+      "residentialPriceCents": 24.56,
+      "averageMonthlyKwh": 634.3777904830291,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "New Jersey": {
+      "period": "2025",
+      "residentialPriceCents": 22.63,
+      "averageMonthlyKwh": 656.1899451935021,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "New Mexico": {
+      "period": "2025",
+      "residentialPriceCents": 15.08,
+      "averageMonthlyKwh": 650.4512665533289,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Nevada": {
+      "period": "2025",
+      "residentialPriceCents": 13.15,
+      "averageMonthlyKwh": 860.378885107341,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "New York": {
+      "period": "2025",
+      "residentialPriceCents": 26.39,
+      "averageMonthlyKwh": 583.8386015873099,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Ohio": {
+      "period": "2025",
+      "residentialPriceCents": 16.96,
+      "averageMonthlyKwh": 879.1582069198804,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Oklahoma": {
+      "period": "2025",
+      "residentialPriceCents": 13.12,
+      "averageMonthlyKwh": 1066.1158055725439,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Oregon": {
+      "period": "2025",
+      "residentialPriceCents": 15.37,
+      "averageMonthlyKwh": 867.4335662932227,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Pennsylvania": {
+      "period": "2025",
+      "residentialPriceCents": 19.3,
+      "averageMonthlyKwh": 846.0211717240103,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Pacific Contiguous": {
+      "period": "2025",
+      "residentialPriceCents": 24.74,
+      "averageMonthlyKwh": 584.6308663807769,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Pacific Noncontiguous": {
+      "period": "2025",
+      "residentialPriceCents": 34.4,
+      "averageMonthlyKwh": 529.416711789416,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Rhode Island": {
+      "period": "2025",
+      "residentialPriceCents": 29.46,
+      "averageMonthlyKwh": 558.879841875806,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "South Atlantic": {
+      "period": "2025",
+      "residentialPriceCents": 15.31,
+      "averageMonthlyKwh": 1054.5373329860233,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "South Carolina": {
+      "period": "2025",
+      "residentialPriceCents": 14.96,
+      "averageMonthlyKwh": 1065.0066083528823,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "South Dakota": {
+      "period": "2025",
+      "residentialPriceCents": 13.38,
+      "averageMonthlyKwh": 998.1196210888024,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Tennessee": {
+      "period": "2025",
+      "residentialPriceCents": 13.18,
+      "averageMonthlyKwh": 1205.1692610810471,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Texas": {
+      "period": "2025",
+      "residentialPriceCents": 15.47,
+      "averageMonthlyKwh": 1104.9327811298274,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Utah": {
+      "period": "2025",
+      "residentialPriceCents": 13.07,
+      "averageMonthlyKwh": 769.5595662029087,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Virginia": {
+      "period": "2025",
+      "residentialPriceCents": 15.28,
+      "averageMonthlyKwh": 1061.2881587070995,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Vermont": {
+      "period": "2025",
+      "residentialPriceCents": 22.92,
+      "averageMonthlyKwh": 588.9885696647406,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Washington": {
+      "period": "2025",
+      "residentialPriceCents": 13.11,
+      "averageMonthlyKwh": 947.7336606845439,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Wisconsin": {
+      "period": "2025",
+      "residentialPriceCents": 18.16,
+      "averageMonthlyKwh": 660.2857552205727,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "West North Central": {
+      "period": "2025",
+      "residentialPriceCents": 13.95,
+      "averageMonthlyKwh": 908.7762755080729,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "West South Central": {
+      "period": "2025",
+      "residentialPriceCents": 14.65,
+      "averageMonthlyKwh": 1111.7870632268416,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "West Virginia": {
+      "period": "2025",
+      "residentialPriceCents": 15.41,
+      "averageMonthlyKwh": 1070.4296817466309,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    },
+    "Wyoming": {
+      "period": "2025",
+      "residentialPriceCents": 13.38,
+      "averageMonthlyKwh": 845.1478923192211,
+      "source": "U.S. Energy Information Administration, Electricity Retail Sales"
+    }
+  }
+}
