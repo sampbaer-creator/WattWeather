@@ -39,7 +39,7 @@
 .city-suggestions button:hover,.city-suggestions button.active { background: #fff7d8; }
 .city-suggestions button b,.city-suggestions button span { display: block; }
 .city-suggestions button span { margin-top: 2px; color: #64736f; font-size: 12px; }
-.city-energy { display: grid; grid-template-columns: repeat(5,1fr); gap: 13px; margin-top: 14px; }
+.city-energy { display: grid; grid-template-columns: repeat(3,1fr); gap: 13px; margin-top: 14px; }
 @media (max-width: 1050px) { .city-energy { grid-template-columns: repeat(3,1fr); } }
 .city-energy article { padding: 21px; border: 1px solid #dbe3dd; border-radius: 14px; background: #fff; }
 .city-energy small,.city-energy strong,.city-energy span { display: block; }
