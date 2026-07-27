@@ -13,7 +13,8 @@ Weather is one of the largest drivers of household electricity demand, but utili
 - Live weather by US ZIP code or city through OpenWeather
 - Strongly typed JSON mapping, `HttpClient`, async/await, cancellation, timeouts, and friendly failure states
 - Local SQLite relational database with locations, households, weather, energy, and settings
-- Deterministic two-year synthetic dataset (730 daily rows) for an immediate demonstration
+- Real energy input through utility CSV imports or manual daily records in the GitHub Pages app
+- Automatic date-and-location matching to Open-Meteo historical weather
 - Total, average, median, range, standard deviation, cost, degree-day, correlation, seasonal, and month-over-month analytics
 - Explainable IQR anomaly detection
 - Regularized multiple linear regression with chronological 80/20 validation
@@ -75,7 +76,7 @@ Requirements: .NET 10 SDK.
 dotnet run --project src/WeatherEnergyAnalytics.Web
 ```
 
-The app creates `src/WeatherEnergyAnalytics.Web/App_Data/weather-energy.db` and seeds 730 synthetic records on first run.
+The app creates `src/WeatherEnergyAnalytics.Web/App_Data/weather-energy.db` on first run. It starts empty and does not fabricate household consumption.
 
 For live weather, never place a real key in `appsettings.json`:
 
@@ -120,7 +121,7 @@ See [the model card](docs/model-card.md) for limitations and intended use.
 
 ## Data provenance and security
 
-The seeded dataset is deterministic and explicitly marked synthetic. Live conditions come from OpenWeather. The architecture supports saved observations going forward; imported historical data should retain its source label. A previously committed API key was removed from active code and must be revoked because deletion from the latest version does not erase Git history.
+The GitHub Pages app accepts real utility CSV or manual energy records, keeps them in browser-local storage, and uses Open-Meteo to match historical weather by city and date. The .NET architecture retains an explicit synthetic-data seeder for opt-in development and tests, but it is not run automatically. A previously committed API key was removed from active code and must be revoked because deletion from the latest version does not erase Git history.
 
 ## Documentation
 

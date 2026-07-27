@@ -21,7 +21,6 @@ await using (var scope = app.Services.CreateAsyncScope())
     var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WeatherEnergyDbContext>>();
     await using var context = await factory.CreateDbContextAsync();
     await context.Database.EnsureCreatedAsync();
-    await scope.ServiceProvider.GetRequiredService<WeatherEnergyAnalytics.Core.Contracts.ISampleDataSeeder>().SeedAsync();
 }
 
 // Configure the HTTP request pipeline.

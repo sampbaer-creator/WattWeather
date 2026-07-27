@@ -13,4 +13,4 @@
   <article class="chart-card"><div class="chart-title"><div><span>Weather sensitivity</span><small>Degree-day totals</small></div></div><div class="degree-ring"><strong>@summary.HeatingDegreeDays.ToString("N0")</strong><span>heating degree days</span></div><p class="muted">@summary.CoolingDegreeDays.ToString("N0") cooling degree days at a 65°F base.</p></article>
  </div>
 </section>}
-@code {private AnalyticsSummary? summary;private EnergyDataPoint[] points=[];private double maxUsage=1;protected override async Task OnInitializedAsync(){var rows=await Repository.GetAsync();points=rows.OrderBy(x=>x.UsageDate).Select(Home.ToPoint).ToArray();summary=AnalyticsService.Calculate(points);maxUsage=points.Max(x=>x.UsageKwh);}}
+@code {private AnalyticsSummary? summary;private EnergyDataPoint[] points=[];private double maxUsage=1;protected override async Task OnInitializedAsync(){var rows=await Repository.GetAsync();points=rows.OrderBy(x=>x.UsageDate).Select(Home.ToPoint).ToArray();summary=AnalyticsService.Calculate(points);maxUsage=points.Length==0?1:points.Max(x=>x.UsageKwh);}}

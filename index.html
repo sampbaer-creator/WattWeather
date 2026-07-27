@@ -32,8 +32,8 @@
       </div>
       <div class="visual">
         <div class="sun"></div>
-        <article class="float weather"><small>DENVER · DEMO</small><div>☀ <strong>72°</strong></div><span>Clear skies · Feels like 70°</span></article>
-        <article class="float usage"><small>AVERAGE DAILY USAGE</small><strong id="hero-average">— kWh</strong><div id="mini-bars" class="mini-bars"></div></article>
+        <article class="float weather"><small id="hero-city">SELECT A CITY</small><div>☀ <strong id="hero-temp">—°</strong></div><span id="hero-condition">Load live weather below</span></article>
+        <article class="float usage"><small>YOUR AVERAGE DAILY USAGE</small><strong id="hero-average">No records</strong><div id="mini-bars" class="mini-bars"></div></article>
         <span class="live">● Browser analytics ready</span>
       </div>
     </section>
@@ -49,7 +49,7 @@
       <span class="eyebrow">LIVE CONDITIONS</span><h2>Weather, with <em>context.</em></h2>
       <p>Start typing and choose a city. Its current conditions and two-year local temperature history will rebuild the energy dashboard.</p>
       <form id="weather-form" class="search"><input id="city" value="Denver, Colorado, United States" list="city-suggestions" autocomplete="off" aria-label="City" placeholder="Start typing a city"><datalist id="city-suggestions"></datalist><button class="pill dark">Load city data →</button></form>
-      <p id="city-status" class="city-status">Energy analytics currently use Denver climate data and demo household assumptions.</p>
+      <p id="city-status" class="city-status">Choose the city where the electricity was used, then import or enter your real usage records.</p>
       <p id="weather-error" class="error" hidden></p>
       <article id="weather-result" class="current-weather">
         <div><small id="weather-place">DENVER</small><strong id="weather-temp">—°</strong><span id="weather-description">Search to load current conditions</span></div>
@@ -59,7 +59,8 @@
 
     <section id="analytics" class="section cream">
       <span class="eyebrow">BUSINESS INTELLIGENCE</span><h2>Energy patterns, <em>made visible.</em></h2>
-      <p id="analytics-provenance">Two years of weather-driven synthetic energy data run entirely in your browser.</p>
+      <p id="analytics-provenance">Add real energy records below. WattWeather will match them to historical weather for the selected city.</p>
+      <div id="analytics-empty" class="empty-panel"><strong>No energy records yet</strong><span>Import a utility CSV or add a record manually to activate the analytics dashboard.</span><a class="pill dark" href="#energy">Add real energy data →</a></div>
       <div id="kpis" class="kpis"></div>
       <div class="dashboard">
         <article class="chart wide"><h3>Energy usage over time</h3><small>Most recent 90 days · kWh</small><div id="usage-chart" class="bars"></div></article>
@@ -70,14 +71,32 @@
 
     <section id="energy" class="section">
       <span class="eyebrow">LOCAL DATA</span><h2>Your energy <em>timeline.</em></h2>
-      <div class="toolbar"><strong id="records-title">Recent Denver records</strong><span>WEATHER-DRIVEN SYNTHETIC ENERGY</span></div>
+      <div class="data-actions">
+        <article>
+          <span class="eyebrow">UTILITY EXPORT</span><h3>Import a CSV</h3>
+          <p>Use columns <code>date</code>, <code>kwh</code>, and optionally <code>cost</code>. Daily or billing-period exports are accepted.</p>
+          <label class="pill dark file-button">Choose CSV<input id="csv-file" type="file" accept=".csv,text/csv"></label>
+          <a id="csv-template" href="data:text/csv;charset=utf-8,date%2Ckwh%2Ccost%0A2026-01-01%2C24.5%2C3.55" download="wattweather-template.csv">Download template</a>
+        </article>
+        <article>
+          <span class="eyebrow">MANUAL RECORD</span><h3>Add daily usage</h3>
+          <form id="record-form" class="record-form">
+            <label>Date<input id="record-date" type="date" required></label>
+            <label>Energy (kWh)<input id="record-kwh" type="number" min="0.01" step="0.01" required></label>
+            <label>Total cost<input id="record-cost" type="number" min="0" step="0.01" placeholder="Optional"></label>
+            <button class="pill dark">Match weather & save</button>
+          </form>
+        </article>
+      </div>
+      <p id="data-message" class="city-status">Records stay in this browser. They are not uploaded to WattWeather or GitHub.</p>
+      <div class="toolbar"><strong id="records-title">Your energy records</strong><button id="clear-records" class="text-button" hidden>Clear all local records</button></div>
       <div class="table-wrap"><table><thead><tr><th>Date</th><th>Weather</th><th>Usage</th><th>Cost</th><th>Rate</th></tr></thead><tbody id="energy-rows"></tbody></table></div>
     </section>
 
     <section id="forecast" class="section dark-section">
       <span class="eyebrow">EXPLAINABLE MODEL</span><h2>Estimate with <em>honesty.</em></h2>
-      <p>This browser demonstration reports a transparent temperature-based baseline. The full .NET project contains the multivariable regression engine and chronological validation workflow.</p>
-      <div class="model"><span>ESTIMATES, NOT GUARANTEES</span><h3>Model card</h3><p>Predictions are planning estimates. Synthetic performance does not imply real-world accuracy, and changes in occupants, appliances, rates, or behavior can reduce reliability.</p><a href="https://github.com/sampbaer-creator/WattWeather/blob/main/docs/model-card.md">Read the full model card →</a></div>
+      <p>Forecast evaluation becomes available after enough real, weather-matched energy records have been added. The full .NET project contains the multivariable regression engine and chronological validation workflow.</p>
+      <div class="model"><span>ESTIMATES, NOT GUARANTEES</span><h3>Model card</h3><p id="forecast-status">Add at least 90 real observations spanning six months before an energy estimate is shown.</p><a href="https://github.com/sampbaer-creator/WattWeather/blob/main/docs/model-card.md">Read the full model card →</a></div>
     </section>
   </main>
   <footer><strong>WattWeather</strong><span>Built by Samuel Baer with .NET, C#, SQLite, JavaScript, and explainable analytics.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
