@@ -1,0 +1,8 @@
+@page "/energy"
+@inject IEnergyRepository Repository
+<PageTitle>Energy Records — WattWeather</PageTitle>
+<section class="page-hero compact"><span class="eyebrow"><i></i> LOCAL DATA</span><h1>Your energy <em>timeline.</em></h1><p>Daily electricity, cost, household, and associated weather records.</p></section>
+<section class="workspace"><div class="toolbar"><strong>@records.Count.ToString("N0") records</strong><span class="data-badge">SYNTHETIC DEMO DATA</span></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Location</th><th>Weather</th><th>Usage</th><th>Cost</th><th>Rate</th></tr></thead><tbody>
+@foreach(var r in records.Take(120)){<tr><td>@r.UsageDate.ToString("MMM d, yyyy")</td><td>@r.Location.Name</td><td>@r.WeatherObservation?.TemperatureF.ToString("0")° · @r.WeatherObservation?.Condition</td><td><strong>@r.ElectricityUsageKwh.ToString("0.0") kWh</strong></td><td>@r.TotalElectricityCost.ToString("C")</td><td>@r.CostPerKwh.ToString("C3")</td></tr>}
+</tbody></table></div></section>
+@code {private IReadOnlyList<EnergyUsageRecord> records=[];protected override async Task OnInitializedAsync()=>records=await Repository.GetAsync();}

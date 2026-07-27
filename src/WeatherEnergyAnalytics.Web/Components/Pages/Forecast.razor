@@ -1,0 +1,7 @@
+@page "/forecast"
+@inject IEnergyRepository Repository
+@inject IEnergyForecastService ForecastService
+<PageTitle>Forecast — WattWeather</PageTitle>
+<section class="page-hero compact"><span class="eyebrow"><i></i> EXPLAINABLE MODEL</span><h1>Estimate with <em>honesty.</em></h1><p>Regularized multiple linear regression trained chronologically—not a black box.</p></section>
+@if(model is not null){<section class="workspace"><div class="kpi-grid forecast-kpis"><article><span>MAE</span><strong>@(model.Metrics?.Mae.ToString("0.00")??"—")</strong><small>kWh</small></article><article><span>RMSE</span><strong>@(model.Metrics?.Rmse.ToString("0.00")??"—")</strong><small>kWh</small></article><article><span>R²</span><strong>@(model.Metrics?.RSquared.ToString("0.000")??"—")</strong><small>test set</small></article><article><span>Test rows</span><strong>@model.Predictions.Count</strong><small>chronological split</small></article></div><article class="model-card"><span class="data-badge">ESTIMATES, NOT GUARANTEES</span><h2>Model card</h2><p>@model.StatusMessage</p><h3>How it works</h3><p>Inputs include temperature range, humidity, degree days, home size, occupants, month, season, previous usage, and air-conditioning hours. Sparse data reduces reliability.</p></article></section>}
+@code {private ForecastModelResult? model;protected override async Task OnInitializedAsync(){var r=await Repository.GetAsync();model=ForecastService.Train(r.OrderBy(x=>x.UsageDate).Select(Home.ToPoint).ToArray());}}

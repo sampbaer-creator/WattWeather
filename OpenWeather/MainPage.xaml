@@ -1,106 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="OpenWeather.MainPage"
-             Title="OpenWeather">
-
-    <ContentPage.Background>
-        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#F4F8FF" Offset="0.0" />
-            <GradientStop Color="#E8F2FF" Offset="0.6" />
-            <GradientStop Color="#F7FBFF" Offset="1.0" />
-        </LinearGradientBrush>
-    </ContentPage.Background>
-
-    <ScrollView>
-        <VerticalStackLayout Padding="20,28,20,24" Spacing="16">
-
-            <Frame CornerRadius="24" Padding="22" HasShadow="True" BorderColor="#DAE8FF" BackgroundColor="#FFFFFF">
-                <VerticalStackLayout Spacing="8">
-                    <Label Text="OpenWeather"
-                           FontSize="34"
-                           FontAttributes="Bold"
-                           TextColor="#102A43" />
-                    <Label Text="Fast weather lookup by ZIP or major city."
-                           FontSize="15"
-                           TextColor="#486581" />
-                </VerticalStackLayout>
-            </Frame>
-
-            <Frame CornerRadius="20" Padding="18" HasShadow="True" BorderColor="#D9E2EC" BackgroundColor="#FFFFFF">
-                <VerticalStackLayout Spacing="14">
-                    <Label Text="Search by ZIP code"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="#102A43" />
-
-                    <Entry x:Name="EntryZipCode"
-                           Placeholder="e.g., 10001"
-                           Keyboard="Numeric"
-                           HorizontalTextAlignment="Center"
-                           BackgroundColor="#F8FAFC"
-                           TextColor="#102A43"
-                           PlaceholderColor="#829AB1"
-                           HeightRequest="50" />
-
-                    <Button x:Name="BtnShowTemp"
-                            Text="Get Weather"
-                            Clicked="BtnShowTemp_Clicked"
-                            FontAttributes="Bold"
-                            HeightRequest="50"
-                            CornerRadius="14"
-                            BackgroundColor="#2563EB"
-                            TextColor="White" />
-                </VerticalStackLayout>
-            </Frame>
-
-            <Frame CornerRadius="20" Padding="18" HasShadow="True" BorderColor="#D9E2EC" BackgroundColor="#FFFFFF">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Or choose a city"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="#102A43" />
-
-                    <Picker x:Name="CityPicker"
-                            Title="Select a city"
-                            HeightRequest="50"
-                            BackgroundColor="#F8FAFC"
-                            TitleColor="#829AB1"
-                            SelectedIndexChanged="CityPicker_SelectedIndexChanged">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type x:String}">
-                                <x:String>New York</x:String>
-                                <x:String>Los Angeles</x:String>
-                                <x:String>Chicago</x:String>
-                                <x:String>Miami</x:String>
-                                <x:String>Dallas</x:String>
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                </VerticalStackLayout>
-            </Frame>
-
-            <Frame CornerRadius="20" Padding="18" HasShadow="True" BorderColor="#D9E2EC" BackgroundColor="#FFFFFF">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Latest conditions"
-                           FontSize="16"
-                           FontAttributes="Bold"
-                           TextColor="#102A43" />
-
-                    <Label x:Name="WindLabel"
-                           Text="Wind details will appear here"
-                           FontSize="14"
-                           TextColor="#486581" />
-
-                    <Label x:Name="PressureHumidityLabel"
-                           Text="Pressure and humidity will appear here"
-                           FontSize="14"
-                           TextColor="#486581" />
-                </VerticalStackLayout>
-            </Frame>
-
-        </VerticalStackLayout>
-    </ScrollView>
-
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:vm="clr-namespace:OpenWeather.ViewModels" x:DataType="vm:WeatherViewModel" x:Class="OpenWeather.MainPage" BackgroundColor="#FBFAF5" Title="WattWeather">
+ <ScrollView><VerticalStackLayout Padding="28" Spacing="20" MaximumWidthRequest="820">
+  <Label Text="WEATHER × ENERGY INTELLIGENCE" TextColor="#FF7657" FontAttributes="Bold" CharacterSpacing="2"/>
+  <Label Text="Weather, with context." FontSize="44" FontAttributes="Bold" TextColor="#013E37"/>
+  <Label Text="Search live conditions by ZIP code or city. Your API key stays outside source control." FontSize="16" TextColor="#60716D"/>
+  <Border BackgroundColor="#FFefb3" StrokeThickness="0" Padding="22" StrokeShape="RoundRectangle 20"><VerticalStackLayout Spacing="14">
+   <Entry Text="{Binding Query}" Placeholder="Denver, CO or 80202" BackgroundColor="White" HeightRequest="52"/>
+   <Button Text="Get weather →" Command="{Binding SearchCommand}" BackgroundColor="#013E37" TextColor="White" HeightRequest="52" CornerRadius="26"/>
+   <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="#FF7657"/><Label Text="{Binding ErrorMessage}" TextColor="#9D3828"/>
+  </VerticalStackLayout></Border>
+  <Border IsVisible="{Binding HasWeather}" BackgroundColor="#013E37" StrokeThickness="0" Padding="28" StrokeShape="RoundRectangle 24"><VerticalStackLayout Spacing="10">
+   <Label Text="{Binding LocationLabel}" TextColor="#FFefb3" FontAttributes="Bold"/><Label Text="{Binding TemperatureLabel}" TextColor="White" FontSize="72" FontAttributes="Bold"/><Label Text="{Binding DescriptionLabel}" TextColor="#E7F2ED" FontSize="17"/>
+   <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12"><Label Text="{Binding HighLowLabel}" TextColor="White"/><Label Grid.Column="1" Text="{Binding HumidityLabel}" TextColor="White"/><Label Grid.Row="1" Text="{Binding WindLabel}" TextColor="White"/><Label Grid.Row="1" Grid.Column="1" Text="{Binding SunLabel}" TextColor="White"/></Grid>
+  </VerticalStackLayout></Border>
+  <Label Text="Analytics and forecasting are also available in the WattWeather web app." TextColor="#60716D" HorizontalTextAlignment="Center"/>
+ </VerticalStackLayout></ScrollView>
 </ContentPage>
-

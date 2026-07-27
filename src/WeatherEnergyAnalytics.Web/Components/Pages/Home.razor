@@ -1,0 +1,40 @@
+@page "/"
+@inject IEnergyRepository EnergyRepository
+@inject IAnalyticsService AnalyticsService
+<PageTitle>WattWeather — Weather & Energy Intelligence</PageTitle>
+
+<section class="hero">
+ <div class="hero-copy">
+  <span class="eyebrow"><i></i> WEATHER × ENERGY INTELLIGENCE</span>
+  <h1>See how weather<br/>shapes your <em>energy.</em></h1>
+  <p>Connect daily conditions with household electricity use, uncover costly patterns, and plan ahead with explainable forecasts.</p>
+  <div class="hero-actions"><a class="button primary" href="/analytics">Explore the dashboard <span>→</span></a><a class="button secondary" href="/energy">View energy records</a></div>
+  <div class="trust-row"><span>✓ Local-first data</span><span>✓ Explainable insights</span><span>✓ No account required</span></div>
+ </div>
+ <div class="hero-visual">
+  <div class="orb"></div>
+  <div class="weather-card glass"><span class="card-label">DENVER · SYNTHETIC DEMO</span><div class="weather-main"><span>☀</span><strong>72°</strong></div><span>Clear skies · Feels like 70°</span></div>
+  <div class="usage-card glass"><div><span class="card-label">AVERAGE DAILY USAGE</span><strong>@(summary?.AverageDailyUsageKwh.ToString("0.0") ?? "—") <small>kWh</small></strong></div><span class="trend">↓ 8.4%</span><div class="sparkline">@for(var i=0;i<18;i++){<i style="height:@(18+(i*11%44))px"></i>}</div></div>
+  <div class="signal-pill">● Analytics engine ready</div>
+ </div>
+</section>
+<section class="stat-strip">
+ <div><strong>@records.Count.ToString("N0")</strong><span>daily observations</span></div>
+ <div><strong>@(summary?.TotalUsageKwh.ToString("N0") ?? "—")</strong><span>kWh analyzed</span></div>
+ <div><strong>@(summary?.TemperatureUsageCorrelation.ToString("+0.00;-0.00;0.00") ?? "—")</strong><span>temperature correlation</span></div>
+ <div><strong>@(summary?.Anomalies.Count ?? 0)</strong><span>unusual days found</span></div>
+</section>
+<section class="feature-section">
+ <span class="eyebrow"><i></i> ONE CONNECTED VIEW</span><h2>From forecast to <em>foresight.</em></h2>
+ <p class="section-lead">A portfolio-grade analytics workflow that turns raw weather and utility data into decisions anyone can understand.</p>
+ <div class="feature-grid">
+  <article class="feature-card featured"><span class="feature-icon">☀</span><h3>Weather context</h3><p>Live conditions, saved locations, resilient errors, and observations linked to every energy record.</p><a href="/weather">Search weather →</a></article>
+  <article class="feature-card"><span class="feature-icon">⌁</span><h3>Energy analytics</h3><p>KPIs, seasonal patterns, correlation, degree days, cost trends, and explainable anomaly detection.</p><a href="/analytics">Explore insights →</a></article>
+  <article class="feature-card"><span class="feature-icon">↗</span><h3>Explainable forecast</h3><p>Regression estimates with chronological validation, MAE, RMSE, R², and reliability guidance.</p><a href="/forecast">See the model →</a></article>
+ </div>
+</section>
+@code {
+ private IReadOnlyList<EnergyUsageRecord> records=[]; private AnalyticsSummary? summary;
+ protected override async Task OnInitializedAsync(){records=await EnergyRepository.GetAsync();summary=AnalyticsService.Calculate(records.Select(ToPoint).ToArray());}
+ internal static EnergyDataPoint ToPoint(EnergyUsageRecord r)=>new(r.UsageDate,r.ElectricityUsageKwh,r.TotalElectricityCost,r.CostPerKwh,r.WeatherObservation?.TemperatureF??0,r.WeatherObservation?.LowTemperatureF??0,r.WeatherObservation?.HighTemperatureF??0,r.WeatherObservation?.HumidityPercent??0,r.HomeSizeSquareFeet,r.OccupantCount,r.HeatingType,r.AirConditioningHours,r.IsSynthetic);
+}

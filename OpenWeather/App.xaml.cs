@@ -1,12 +1,7 @@
-﻿namespace OpenWeather
+namespace OpenWeather;
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-
-            MainPage = new NavigationPage(new MainPage());
-        }
-    }
+ private readonly MainPage mainPage;
+ public App(MainPage mainPage){InitializeComponent();this.mainPage=mainPage;}
+ protected override Window CreateWindow(IActivationState? activationState)=>new(new NavigationPage(mainPage));
 }
