@@ -1,0 +1,34 @@
+name: Feature request
+description: Suggest a focused improvement
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What user need would this solve?
+      description: Explain the problem in everyday language.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed improvement
+      description: Describe the experience or result you would like.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Public weather and state analytics
+        - Personal energy workspace
+        - Forecasting and statistics
+        - Accessibility and design
+        - .NET application
+        - Documentation
+    validations:
+      required: true
+
