@@ -16,6 +16,7 @@ Weather is one of the largest drivers of household electricity demand, but utili
 - Real energy input through utility CSV imports or manual daily records in the GitHub Pages app
 - Automatic date-and-location matching to Open-Meteo historical weather
 - City autocomplete plus Open-Meteo solar-resource data and securely refreshed EIA state electricity statistics
+- Separate public Explore dashboard and private Your Energy workspace
 - Total, average, median, range, standard deviation, cost, degree-day, correlation, seasonal, and month-over-month analytics
 - Explainable IQR anomaly detection
 - Regularized multiple linear regression with chronological 80/20 validation
@@ -123,6 +124,8 @@ See [the model card](docs/model-card.md) for limitations and intended use.
 ## Data provenance and security
 
 The GitHub Pages app accepts real utility CSV or manual energy records, keeps them in browser-local storage, and uses Open-Meteo to match historical weather by city and date. The .NET architecture retains an explicit synthetic-data seeder for opt-in development and tests, but it is not run automatically. A previously committed API key was removed from active code and must be revoked because deletion from the latest version does not erase Git history.
+
+The public landing page contains only city weather and aggregated public API statistics. Personal CSV imports, records, analytics, and forecasts live on the separate `energy.html` page.
 
 The EIA key is stored only as the GitHub Actions secret `energy658`. A scheduled workflow publishes non-sensitive state residential price and usage statistics to `data/eia-state-energy.json`; the key is never included in GitHub Pages. EIA statistics describe state averages, not a specific household. Open-Meteo supplies city weather and solar resource data without a browser API key.
 

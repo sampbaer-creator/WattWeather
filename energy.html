@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="WattWeather shows how local weather affects your household electricity use and cost.">
+  <title>Your Energy — WattWeather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="pages-extra.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="index.html"><b>W</b> WattWeather</a>
+    <nav>
+      <a href="index.html">Explore public data</a><a href="#weather">Your location</a>
+      <a href="#energy">Your records</a><a href="#analytics">Your analytics</a><a href="#forecast">Your forecast</a>
+    </nav>
+    <a class="pill dark" href="#analytics">Open dashboard ↗</a>
+  </header>
+
+  <main>
+    <section id="overview" class="hero">
+      <div>
+        <span class="eyebrow">WEATHER & ELECTRICITY</span>
+        <h1>See how weather<br>changes your <em>electric bill.</em></h1>
+        <p>Add your electricity use, choose your city, and see whether hot or cold weather is raising your usage and cost.</p>
+        <div class="actions"><a class="pill dark" href="#analytics">Explore the dashboard →</a><a class="pill outline" href="#energy">View energy records</a></div>
+        <div class="trust"><span>✓ Browser-local data</span><span>✓ Explainable insights</span><span>✓ No account required</span></div>
+      </div>
+      <div class="visual">
+        <div class="sun"></div>
+        <article class="float weather"><small id="hero-city">SELECT A CITY</small><div>☀ <strong id="hero-temp">—°</strong></div><span id="hero-condition">Load live weather below</span></article>
+        <article class="float usage"><small>YOUR AVERAGE DAILY USAGE</small><strong id="hero-average">No records</strong><div id="mini-bars" class="mini-bars"></div></article>
+        <span class="live">● Browser analytics ready</span>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div><strong id="stat-days">—</strong><span>daily observations</span></div>
+      <div><strong id="stat-kwh">—</strong><span>kWh analyzed</span></div>
+      <div><strong id="stat-correlation">—</strong><span>weather connection score</span></div>
+      <div><strong id="stat-anomalies">—</strong><span>unusually high records</span></div>
+    </section>
+
+    <section id="weather" class="section">
+      <span class="eyebrow">YOUR LOCATION</span><h2>Start with your <em>city.</em></h2>
+      <p>Choose where the electricity was used. We match that city’s weather to your records and compare your results with its state.</p>
+      <form id="weather-form" class="search"><div class="city-picker"><input id="city" value="" autocomplete="off" aria-label="City" placeholder="Start typing a city, e.g. Denver"><div id="city-suggestions" class="city-suggestions" hidden></div></div><button class="pill dark">Load city data →</button></form>
+      <p id="city-status" class="city-status">Choose the city where the electricity was used, then import or enter your real usage records.</p>
+      <p id="weather-error" class="error" hidden></p>
+      <article id="weather-result" class="current-weather">
+        <div><small id="weather-place">DENVER</small><strong id="weather-temp">—°</strong><span id="weather-description">Search to load current conditions</span></div>
+        <div class="facts"><span><small>Feels like</small><b id="weather-feels">—</b></span><span><small>Humidity</small><b id="weather-humidity">—</b></span><span><small>Wind</small><b id="weather-wind">—</b></span><span><small>High / low</small><b id="weather-highlow">—</b></span></div>
+      </article>
+      <div id="city-energy" class="city-energy" hidden>
+        <article><small>SOLAR CONDITIONS TODAY</small><strong id="solar-potential">—</strong><span>sunlight energy available per square meter</span></article>
+        <article><small>NEXT 7 DAYS</small><strong id="solar-week">—</strong><span>expected sunlight energy—not home electricity use</span></article>
+        <article><small>WEATHER EFFECT</small><strong id="climate-load">—</strong><span>likely heating or cooling pressure</span></article>
+        <article><small>STATE ELECTRICITY PRICE</small><strong id="eia-rate">—</strong><span id="eia-rate-note">Latest EIA residential average</span></article>
+        <article><small>STATE HOME AVERAGE</small><strong id="eia-usage">—</strong><span id="eia-usage-note">Average monthly household use</span></article>
+        <article><small>YOU VS. YOUR STATE</small><strong id="city-state-comparison">Add usage</strong><span id="city-state-note">Import records for a personal comparison</span></article>
+      </div>
+    </section>
+
+    <section id="analytics" class="section cream">
+      <span class="eyebrow">YOUR RESULTS</span><h2>Your electricity use, <em>explained simply.</em></h2>
+      <p id="analytics-provenance">Add real electricity records below. WattWeather matches them to the weather on those dates.</p>
+      <div id="analytics-empty" class="empty-panel"><strong>No energy records yet</strong><span>Import a utility CSV or add a record manually to activate the analytics dashboard.</span><a class="pill dark" href="#energy">Add real energy data →</a></div>
+      <div id="kpis" class="kpis"></div>
+      <div class="dashboard">
+        <article class="chart wide"><h3>Energy usage over time</h3><small>Most recent 90 days · kWh</small><div id="usage-chart" class="bars"></div></article>
+        <article class="chart wide"><h3>Does temperature change your electricity use?</h3><small id="scatter-caption">Import weather-matched records to measure the connection</small><div id="scatter-chart" class="scatter-chart"></div></article>
+        <article class="chart"><h3>Usage by temperature range</h3><small>Average kWh per record</small><div id="temperature-bands" class="band-chart"></div></article>
+        <article class="chart"><h3>Usage distribution</h3><div id="distribution" class="metric-list"></div></article>
+        <article class="chart"><h3>Heating and cooling pressure</h3><div class="ring"><strong id="hdd">—</strong><span>cold-weather heating score</span></div><p id="cdd"></p></article>
+        <article class="chart"><h3>Does weather affect homes across your state?</h3><small>State electricity use compared with your city’s yearly temperature</small><div class="state-correlation"><strong id="state-correlation">—</strong><span id="state-correlation-note">Select a U.S. city to calculate</span></div></article>
+      </div>
+    </section>
+
+    <section id="energy" class="section">
+      <span class="eyebrow">YOUR ELECTRICITY DATA</span><h2>Add your real <em>usage.</em></h2>
+      <div class="data-actions">
+        <article>
+          <span class="eyebrow">UTILITY EXPORT</span><h3>Import a CSV</h3>
+          <p>Use columns <code>date</code>, <code>kwh</code>, and optionally <code>cost</code>. Daily or billing-period exports are accepted.</p>
+          <label class="pill dark file-button">Choose CSV<input id="csv-file" type="file" accept=".csv,text/csv"></label>
+          <a id="csv-template" href="data:text/csv;charset=utf-8,date%2Ckwh%2Ccost%0A2026-01-01%2C24.5%2C3.55" download="wattweather-template.csv">Download template</a>
+        </article>
+        <article>
+          <span class="eyebrow">MANUAL RECORD</span><h3>Add daily usage</h3>
+          <form id="record-form" class="record-form">
+            <label>Date<input id="record-date" type="date" required></label>
+            <label>Energy (kWh)<input id="record-kwh" type="number" min="0.01" step="0.01" required></label>
+            <label>Total cost<input id="record-cost" type="number" min="0" step="0.01" placeholder="Optional"></label>
+            <button class="pill dark">Match weather & save</button>
+          </form>
+        </article>
+      </div>
+      <p id="data-message" class="city-status">Records stay in this browser. They are not uploaded to WattWeather or GitHub.</p>
+      <div class="toolbar"><strong id="records-title">Your energy records</strong><button id="clear-records" class="text-button" hidden>Clear all local records</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Weather</th><th>Usage</th><th>Cost</th><th>Rate</th></tr></thead><tbody id="energy-rows"></tbody></table></div>
+    </section>
+
+    <section id="forecast" class="section dark-section">
+      <span class="eyebrow">ELECTRICITY FORECAST</span><h2>Plan for the next <em>weather change.</em></h2>
+      <p>After enough records are added, WattWeather estimates your electricity use at the current temperature and shows how accurate that estimate has been.</p>
+      <div id="forecast-metrics" class="forecast-metrics"></div>
+      <div class="model"><span>ESTIMATES, NOT GUARANTEES</span><h3>How this estimate works</h3><p id="forecast-status">Add at least 90 real observations spanning six months before an electricity estimate is shown.</p><p id="forecast-method">WattWeather learns how your past electricity use changed with temperature, then tests that pattern on your newest records. Weather is only one reason electricity use changes.</p><a href="https://github.com/sampbaer-creator/WattWeather/blob/main/docs/model-card.md">Read the technical details →</a></div>
+    </section>
+  </main>
+  <footer><strong>WattWeather</strong><span>Built by Samuel Baer with .NET, C#, SQLite, JavaScript, and explainable analytics.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
+  <script src="pages.js"></script>
+</body>
+</html>
