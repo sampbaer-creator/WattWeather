@@ -78,4 +78,60 @@ public sealed class EnergyCalculationsTests
 
         Assert.Null(result);
     }
+
+    [Theory]
+    [InlineData(850, BillComparisonBand.Above, 26.3)]
+    [InlineData(673, BillComparisonBand.Near, 0)]
+    [InlineData(500, BillComparisonBand.Below, -25.7)]
+    public void CompareBill_UsesValidatedOutcomeBands(double usage, BillComparisonBand band, double expectedDifference)
+    {
+        var state = new StateEnergy { AverageMonthlyKwh = 673, ResidentialPriceCents = 15 };
+        var result = EnergyCalculations.CompareBill(100, usage, state);
+        Assert.Equal(band, result.Band);
+        Assert.Equal(expectedDifference, result.DifferencePercent, 1);
+        Assert.False(result.IsEstimated);
+    }
+
+    [Fact]
+    public void CompareBill_EstimatesUsageWhenOnlyCostIsProvided()
+    {
+        var state = new StateEnergy { AverageMonthlyKwh = 673, ResidentialPriceCents = 20 };
+        var result = EnergyCalculations.CompareBill(100, null, state);
+        Assert.Equal(500, result.KilowattHours, 6);
+        Assert.True(result.IsEstimated);
+    }
+
+    [Fact]
+    public void CalculateDegreeDays_UsesSixtyFiveDegreeBaseline()
+    {
+        var result = EnergyCalculations.CalculateDegreeDays([50, 65, 80]);
+        Assert.Equal(15, result.HeatingDegreeDays);
+        Assert.Equal(15, result.CoolingDegreeDays);
+    }
+
+    [Fact]
+    public void ParseDailyCsv_RejectsMonthlyCadence()
+    {
+        var csv = "date,kwh\n2026-01-01,20\n2026-02-01,21\n2026-03-01,22";
+        var error = Assert.Throws<InvalidOperationException>(() => EnergyRecordStore.ParseDailyCsv(csv));
+        Assert.Contains("requires daily rows", error.Message);
+    }
+
+    [Fact]
+    public void ParseDailyCsv_AcceptsDailyCadence()
+    {
+        var csv = "date,kwh\n2026-01-01,20\n2026-01-02,21\n2026-01-03,22";
+        Assert.Equal(3, EnergyRecordStore.ParseDailyCsv(csv).Count);
+    }
+
+    [Fact]
+    public void PublicShareQuery_ContainsOnlyCityAndState()
+    {
+        var city = new CityLocation("Denver", 39.73915, -104.9847, "United States", "US", "Colorado");
+        var query = EnergyCalculations.BuildPublicShareQuery(city);
+        Assert.Equal("?city=Denver&state=Colorado", query);
+        Assert.DoesNotContain("kwh", query, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("cost", query, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("localStorage", query, StringComparison.OrdinalIgnoreCase);
+    }
 }

@@ -155,3 +155,20 @@ public sealed record EnergySummary(
     int UnusualRecordCount);
 
 public sealed record CorrelationResponse(double? Value, int MatchedYears);
+
+public enum BillComparisonBand
+{
+    Below,
+    Near,
+    Above
+}
+
+public sealed record BillComparison(
+    double KilowattHours,
+    bool IsEstimated,
+    double DifferencePercent,
+    BillComparisonBand Band,
+    string Headline,
+    string Guidance);
+
+public sealed record DegreeDaySummary(double HeatingDegreeDays, double CoolingDegreeDays);

@@ -1,78 +1,61 @@
 # WattWeather
 
-### Know whether solar makes sense where you live.
+### Does hot or cold weather help explain your electricity bill?
 
-WattWeather is a C# weather and energy dashboard that turns one U.S. city search into a clear local snapshot: solar potential, weather-driven energy pressure, state power sources, available discounts, and household energy trends.
+WattWeather is a C# weather-and-energy analytics application. One U.S. city search combines local Open-Meteo weather with statewide EIA household electricity averages; a separate, browser-private workflow lets a visitor compare one bill or analyze daily usage history.
 
-[Open the live app](https://sampbaer-creator.github.io/WattWeather/) · [Explore solar](https://sampbaer-creator.github.io/WattWeather/solar) · [Check discounts](https://sampbaer-creator.github.io/WattWeather/discounts)
+[Open the live app](https://sampbaer-creator.github.io/WattWeather/) · [Review the architecture](https://sampbaer-creator.github.io/WattWeather/architecture) · [Analyze daily energy](https://sampbaer-creator.github.io/WattWeather/energy)
 
-## What WattWeather answers
+## What it answers
 
-The experience is divided into focused pages so visitors do not have to navigate one crowded dashboard.
-
-| Page | What it helps answer |
+| Page | Question |
 | --- | --- |
-| **Overview** | What is this city's weather and energy snapshot? |
-| **Solar** | What could a typical 6 kW system with 15 solar panels produce? |
-| **Discounts** | Which confirmed rebates could reduce a solar quote? |
-| **Weather** | Are local temperatures increasing heating or cooling demand? |
-| **Power** | Which energy source typically leads this state's electricity generation? |
-| **My energy** | How are a household's bills, usage, and temperatures related over time? |
+| **Overview** | How does local weather compare with statewide electricity use and price, and where does one bill sit? |
+| **My energy** | Does temperature have a measurable relationship with private daily usage? |
+| **Weather** | Are current conditions adding heating or cooling pressure? |
+| **Power** | Which source typically leads the state's electricity generation? |
+| **Solar** | Is a representative 6 kW system worth investigating further? |
+| **Discounts** | Where can a visitor research incentives and model confirmed rebates? |
+| **Architecture** | How do the Blazor WebAssembly and optional ASP.NET editions work? |
 
-Solar production, savings, weather relationships, and discounts are screening estimates—not quotes, guarantees, tax advice, or substitutes for current program rules.
+The public snapshot does **not** provide city-level household electricity measurements: weather is local, while electricity use and price are statewide EIA averages. Solar production, weather relationships, forecasts, and discounts are screening estimates—not quotes, guarantees, causal claims, tax advice, or substitutes for current program rules.
 
-## Design
+## Validated analytics
 
-WattWeather uses a warm, approachable visual system inspired by sunlight and changing weather.
+- **One-bill comparison:** above average is more than 10% over the state household average; near average is within ±10%; below average is more than 10% under. If kWh is omitted, usage is explicitly estimated from bill cost and the state average residential rate.
+- **Full-history import:** requires at least three unique daily rows. Weekly or monthly cadence is rejected instead of being silently matched to daily weather.
+- **Pearson correlation:** measures linear association between temperature and electricity use; it does not establish causation.
+- **HDD/CDD65:** sums daily degrees below or above a 65°F reference baseline.
+- **IQR anomaly review:** flags values above `Q3 + 1.5 × IQR`; this robust method does not assume normally distributed household use.
+- **Regression:** explainable linear regression is preferred for estimates because limited household datasets do not justify an overfit-prone model.
 
-| Role | Color |
-| --- | --- |
-| Canvas | `#fffafa` |
-| Solar yellow | `#ffc928` |
-| Deep navy | `#10243e` |
-| Action coral | `#ff6846` |
-| Sky blue | `#83d7f5` |
-| Energy green | `#83d19c` |
-| Supporting violet | `#a98bf2` |
+Share links contain only `city` and `state`. Personal kWh and cost records remain in local storage and never enter the public URL.
 
-The interface uses rounded cards, circular solar graphics, high-contrast calls to action, responsive navigation, and plain-language explanations. CTA colors intentionally differ from the company colors while staying within the weather-and-solar theme.
+## Supporting solar and discount tools
 
-## Solar and discount tools
+The solar screen models a representative 15-panel, 6 kW array with an 80% production factor, local forecast radiation, and the statewide residential price. It is not a roof design or financial guarantee.
 
-The Solar page models a practical baseline system:
-
-- 15 solar panels at 400 watts each
-- 6 kW total array size
-- An 80% real-world production factor for heat, wiring, inverter, shade, and other losses
-- Local solar radiation and state residential electricity prices
-
-The Discounts page explains current federal status, links to [DSIRE](https://programs.dsireusa.org/system/program) for state and utility programs, and includes a calculator for rebates that the visitor has independently confirmed. It also links to the external [Solar Estimate savings calculator](https://www.solar-estimate.org/savings-calculator) for comparison.
+The Discounts page links to [DSIRE](https://programs.dsireusa.org/system/program) and [IRS guidance](https://www.irs.gov/credits-deductions/residential-clean-energy-credit), then lets visitors model rebates they have independently confirmed. WattWeather does not claim live incentive eligibility or DSIRE API integration.
 
 ## Architecture
 
-WattWeather keeps the main application logic in C#:
-
 ```text
-app/       .NET 10 Blazor WebAssembly UI and energy calculations
-server/    ASP.NET Core API, Open-Meteo proxy, EIA data, and security middleware
-tests/     xUnit tests for calculations and backend security
+app/       .NET 10 Blazor WebAssembly UI and analytics
+server/    Optional ASP.NET Core API, Open-Meteo proxy, EIA data, and security middleware
+tests/     xUnit calculation, import-validation, and backend-security tests
 scripts/   Monthly EIA snapshot refresh
 ```
 
-The secure ASP.NET edition uses same-origin `/api` endpoints. The server validates inputs, rate-limits API traffic, caches public responses, compresses output, limits request bodies, removes identifying server headers, and sends CSP, HSTS, frame, MIME-sniffing, referrer, permissions, and cross-origin isolation headers.
-
-The live GitHub Pages edition is a standalone Blazor WebAssembly build. GitHub Pages cannot execute ASP.NET Core, so this edition reads public Open-Meteo endpoints and the checked-in EIA snapshot directly. Personal energy records stay in browser local storage and are not uploaded.
+The live GitHub Pages edition runs as standalone Blazor WebAssembly, calls public Open-Meteo endpoints, and reads a checked-in EIA snapshot. The optional server edition provides validated, cached, rate-limited same-origin `/api` endpoints plus security headers. GitHub Pages cannot execute ASP.NET Core.
 
 ## Run locally
 
-Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), then run:
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), then:
 
 ```powershell
 dotnet restore WattWeather.slnx
 dotnet run --project server/WattWeather.Server.csproj
 ```
-
-Open the local address printed by ASP.NET Core.
 
 ## Verify
 
@@ -82,22 +65,18 @@ dotnet test WattWeather.slnx -c Release
 dotnet publish server/WattWeather.Server.csproj -c Release -o artifacts/publish
 ```
 
-GitHub Actions builds, tests, and publishes the application. A separate monthly workflow refreshes `server/Data/eia-state-energy.json` when an EIA API secret is configured.
+The deterministic suite covers bill-result branches, cost-only estimation, Pearson behavior, HDD/CDD65, IQR summaries, daily CSV cadence, solar calculations, and ASP.NET security behavior.
 
 ## Deployment
 
-Every push to `main` triggers `.github/workflows/pages.yml`, which publishes the standalone Blazor application to GitHub Pages. The workflow configures the `/WattWeather/` base path and route fallback so direct page links work.
+Every push to `main` triggers `.github/workflows/pages.yml`, publishing the standalone Blazor application at the `/WattWeather/` base path. The optional ASP.NET edition can be deployed with the included `Dockerfile` and `render.yaml`.
 
-The secure backend edition can be deployed using the included `Dockerfile` and `render.yaml`:
+## Data sources
 
-1. Open [Render's New Blueprint page](https://dashboard.render.com/blueprints).
-2. Connect `sampbaer-creator/WattWeather`.
-3. Apply the detected `render.yaml`.
+- [Open-Meteo](https://open-meteo.com/): city search, current conditions, forecasts, solar radiation, and historical temperature.
+- [U.S. Energy Information Administration](https://www.eia.gov/opendata/): statewide residential prices, usage, and generation data.
+- [DSIRE](https://programs.dsireusa.org/system/program) and [IRS](https://www.irs.gov/credits-deductions/residential-clean-energy-credit): external program-research guidance.
 
-The Docker image runs as a non-root user, exposes a health endpoint at `/health`, and listens on container port `8080`.
+## Status and limitations
 
-## Public data
-
-- [Open-Meteo](https://open-meteo.com/) supplies city search, current conditions, forecasts, solar radiation, and historical temperature.
-- [U.S. Energy Information Administration](https://www.eia.gov/opendata/) supplies state residential prices, usage statistics, and electricity-generation data.
-- [DSIRE](https://programs.dsireusa.org/system/program) and [IRS Residential Clean Energy Credit guidance](https://www.irs.gov/credits-deductions/residential-clean-energy-credit) support program research. Eligibility and current rules must always be verified with the responsible agency or utility.
+Active portfolio project. State averages are context, not household or city measurements. Correlation does not prove cause. One bill cannot establish a pattern. Forecasts and anomalies are estimates and review prompts.

@@ -1,0 +1,19 @@
+@page "/architecture"
+<PageTitle>Architecture — WattWeather</PageTitle>
+<section class="page-hero">
+    <div><span class="kicker">TECHNICAL REVIEW</span><h1>A .NET pipeline built for <em>clarity and privacy.</em></h1><p>The GitHub Pages edition is a Blazor WebAssembly application. An optional ASP.NET Core edition proxies public data through validated, cached, rate-limited API endpoints.</p></div>
+</section>
+<section class="page-section">
+    <div class="split-panel">
+        <article><span class="kicker">GITHUB PAGES</span><h2>Static Blazor WebAssembly</h2><p>The browser calls public Open-Meteo endpoints and reads a checked-in EIA state snapshot. No API secret is shipped to the client. Personal daily records remain in browser local storage.</p></article>
+        <article><span class="kicker">OPTIONAL SERVER</span><h2>ASP.NET Core API</h2><p>The server edition provides same-origin endpoints, input validation, caching, rate limits, and security headers. It does not turn browser-local records into server data.</p></article>
+    </div>
+    <div class="method"><strong>Product boundaries:</strong> local weather is compared with statewide EIA averages. Solar is a screening estimate—not a roof design or financial promise. DSIRE and IRS are research links; WattWeather does not claim live eligibility or incentive API integration.</div>
+    <div class="section-intro spaced"><span class="kicker">ANALYTICS</span><h2>Explainable methods before complexity.</h2></div>
+    <div class="feature-grid">
+        <article class="feature-card"><span>PEARSON</span><h3>Correlation</h3><p>Measures linear association; correlation does not establish causation.</p></article>
+        <article class="feature-card"><span>HDD / CDD65</span><h3>Weather pressure</h3><p>Daily degrees below or above the 65°F baseline.</p></article>
+        <article class="feature-card"><span>IQR</span><h3>Anomaly review</h3><p>Flags high records above Q3 + 1.5 × IQR without assuming normal data.</p></article>
+        <article class="feature-card"><span>REGRESSION</span><h3>Estimates</h3><p>A simple linear model stays explainable and reduces overfitting risk with limited history.</p></article>
+    </div>
+</section>

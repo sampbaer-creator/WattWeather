@@ -4,5 +4,7 @@
 *.key
 web-run*.log
 artifacts/
+App_Data/
+tmp/
 **/bin/
 **/obj/

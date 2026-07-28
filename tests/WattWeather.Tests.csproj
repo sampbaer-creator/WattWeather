@@ -24,4 +24,9 @@
     <ProjectReference Include="..\server\WattWeather.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="WeatherEnergyAnalytics.Core.Tests\**\*.cs" />
+    <Compile Remove="WeatherEnergyAnalytics.Infrastructure.Tests\**\*.cs" />
+  </ItemGroup>
+
 </Project>
