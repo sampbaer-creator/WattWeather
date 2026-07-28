@@ -1,0 +1,48 @@
+name: Deploy WattWeather to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/configure-pages@v5
+      - name: Publish Blazor WebAssembly
+        run: dotnet publish app/WattWeather.App.csproj -c Release -o artifacts/pages
+      - name: Configure repository base path and route fallback
+        shell: bash
+        run: |
+          site="artifacts/pages/wwwroot"
+          sed -i 's#<base href="/">#<base href="/WattWeather/">#' "$site/index.html"
+          cp "$site/index.html" "$site/404.html"
+          touch "$site/.nojekyll"
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: artifacts/pages/wwwroot
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

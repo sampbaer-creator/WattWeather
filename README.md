@@ -2,6 +2,8 @@
 
 WattWeather is a C# energy dashboard that answers one practical question at a time: whether solar is worth exploring locally, how weather affects demand, what powers a state, which confirmed discounts reduce a quote, and how a household's own usage changes over time.
 
+**Live app:** https://sampbaer-creator.github.io/WattWeather/
+
 The interface is intentionally split into focused pages instead of one crowded dashboard:
 
 | Page | Question |
@@ -24,7 +26,9 @@ Solar output, savings, weather relationships, and discounts are screening estima
 - `Dockerfile` — reproducible non-root production image
 - `render.yaml` — health-checked Render deployment with deploys gated on passing CI
 
-The browser calls only same-origin `/api` endpoints. The server validates inputs, hides upstream implementation details, applies per-IP API rate limits, caches public responses, compresses output, limits request bodies, removes the Kestrel server header, and sends CSP, HSTS, frame, MIME-sniffing, referrer, permissions, and cross-origin isolation headers. Personal energy records remain in browser local storage and are not uploaded.
+On an ASP.NET host, the browser calls only same-origin `/api` endpoints. The server validates inputs, hides upstream implementation details, applies per-IP API rate limits, caches public responses, compresses output, limits request bodies, removes the Kestrel server header, and sends CSP, HSTS, frame, MIME-sniffing, referrer, permissions, and cross-origin isolation headers.
+
+The GitHub Pages edition is a standalone Blazor WebAssembly build. Because Pages cannot execute ASP.NET Core, that edition reads the same public Open-Meteo endpoints and checked-in EIA snapshot directly. Personal energy records remain in browser local storage in both editions and are never uploaded.
 
 ## Run locally
 
@@ -49,7 +53,9 @@ GitHub Actions runs the same build, test, and publish checks on pushes and pull 
 
 ## Deploy
 
-The app requires an ASP.NET Core host; GitHub Pages cannot run its backend. The checked-in Render Blueprint builds the Docker image, checks `/health`, and deploys only after CI succeeds.
+The `pages.yml` workflow publishes the complete standalone Blazor app to GitHub Pages after every successful push to `main`. It configures the `/WattWeather/` base path, includes the `_framework` files, and provides a route fallback so direct links such as `/WattWeather/solar` work.
+
+For the secure ASP.NET backend edition, the checked-in Render Blueprint builds the Docker image, checks `/health`, and deploys only after CI succeeds.
 
 1. Open [Render's New Blueprint page](https://dashboard.render.com/blueprints).
 2. Connect `sampbaer-creator/WattWeather`.
