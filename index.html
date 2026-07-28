@@ -3,77 +3,118 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Explore local weather, solar conditions, and public electricity statistics with WattWeather.">
-  <title>WattWeather — City Weather & Electricity</title>
+  <meta name="description" content="Find out whether solar is worth it, how weather affects energy use, and what powers your state.">
+  <title>WattWeather — Your city’s energy story</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="pages.css">
-  <link rel="stylesheet" href="pages-extra.css">
+  <link rel="stylesheet" href="dashboard.css">
 </head>
-<body>
-  <header>
-    <a class="brand" href="index.html"><b>W</b> WattWeather</a>
-    <nav><a href="#overview">Overview</a><a href="#city">City data</a><a href="#insights">Charts</a><a href="energy.html">Your Energy</a></nav>
-    <a class="pill dark" href="energy.html">Analyze your usage →</a>
+<body data-page="home">
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="WattWeather home"><span class="brand-sun">☀</span><span>WattWeather</span></a>
+    <nav aria-label="Primary navigation">
+      <a class="active" href="index.html">Overview</a>
+      <a href="solar.html">Solar value</a>
+      <a href="weather-impact.html">Weather impact</a>
+      <a href="power.html">Power sources</a>
+    </nav>
+    <a class="button button-coral header-cta" href="#city-search">Check my city <span>→</span></a>
   </header>
+
   <main>
-    <section id="overview" class="hero">
+    <section class="home-hero">
+      <div class="hero-copy">
+        <span class="eyebrow">LOCAL WEATHER + ENERGY, EXPLAINED</span>
+        <h1>Is solar worth it<br>where <em>you live?</em></h1>
+        <p>See how sunshine, temperature, and your state’s power supply shape energy use and cost—without digging through five different websites.</p>
+        <div class="hero-actions">
+          <a class="button button-coral" href="#city-search">Check my city <span>→</span></a>
+          <a class="button button-sky" href="weather-impact.html">See weather impact</a>
+        </div>
+        <div class="proof-row"><span>✓ Free public data</span><span>✓ No account</span><span>✓ Plain-language answers</span></div>
+      </div>
+      <div class="hero-art" aria-label="Weather and solar dashboard preview">
+        <div class="sun-orbit"><span>☀</span></div>
+        <article class="floating-card forecast-card">
+          <small id="hero-city">YOUR CITY</small>
+          <div><span id="hero-icon">☀</span><strong id="hero-temp">—°</strong></div>
+          <p id="hero-condition">Choose a city to begin</p>
+        </article>
+        <article class="floating-card solar-card">
+          <small>SOLAR SIGNAL</small>
+          <strong id="hero-solar">—</strong>
+          <div class="signal-track"><i id="hero-solar-bar"></i></div>
+          <span id="hero-solar-note">Waiting for local sunshine data</span>
+        </article>
+        <div class="orbit-note">Weather shapes demand. Sunshine creates opportunity.</div>
+      </div>
+    </section>
+
+    <section id="city-search" class="city-banner">
       <div>
-        <span class="eyebrow">PUBLIC WEATHER & ELECTRICITY DATA</span>
-        <h1>Understand your city<br>through <em>real data.</em></h1>
-        <p>Choose a city to explore current weather, the seven-day outlook, solar conditions, and public state electricity trends.</p>
-        <div class="actions"><a class="pill dark" href="#city">Choose a city →</a><a class="pill outline" href="energy.html">Use your own energy data</a></div>
-        <div class="trust"><span>✓ Free public APIs</span><span>✓ No account needed</span><span>✓ Easy-to-read charts</span></div>
+        <span class="eyebrow">START HERE</span>
+        <h2>What is your city’s energy story?</h2>
       </div>
-      <div class="visual">
-        <div class="sun"></div>
-        <article class="float weather"><small id="hero-city">CHOOSE A CITY</small><div>☀ <strong id="hero-temp">—°</strong></div><span id="hero-condition">Live weather will appear here</span></article>
-        <article class="float usage"><small>STATE HOME AVERAGE</small><strong id="hero-state-usage">— kWh/mo</strong><div id="mini-bars" class="mini-bars"></div></article>
-        <span class="live">● Open-Meteo + EIA public data</span>
-      </div>
-    </section>
-    <section class="stats">
-      <div><strong id="stat-high">—</strong><span>today’s high</span></div>
-      <div><strong id="stat-low">—</strong><span>today’s low</span></div>
-      <div><strong id="stat-rate">—</strong><span>state home electricity price</span></div>
-      <div><strong id="stat-solar">—</strong><span>today’s solar resource</span></div>
-    </section>
-
-    <section id="city" class="section">
-      <span class="eyebrow">CHOOSE A LOCATION</span><h2>What is happening in <em>your city?</em></h2>
-      <p>Start typing a city and select it from the menu. The dashboard will update with that location’s data.</p>
-      <form id="public-city-form" class="search">
-        <div class="city-picker"><input id="public-city" autocomplete="off" placeholder="Start typing, e.g. Salt Lake City"><div id="public-suggestions" class="city-suggestions" hidden></div></div>
-        <button class="pill dark">Load city dashboard →</button>
+      <form class="location-form" data-location-form>
+        <div class="city-picker">
+          <label class="sr-only" for="city-input">City or ZIP code</label>
+          <input id="city-input" data-city-input autocomplete="off" placeholder="Try Denver, Colorado">
+          <div class="city-suggestions" data-city-suggestions hidden></div>
+        </div>
+        <button class="button button-coral" type="submit">Build my snapshot <span>→</span></button>
       </form>
-      <p id="public-error" class="error" hidden></p>
-      <article class="current-weather">
-        <div><small id="public-place">SELECT A CITY</small><strong id="public-temp">—°</strong><span id="public-description">Current conditions</span></div>
-        <div class="facts"><span><small>Feels like</small><b id="public-feels">—</b></span><span><small>Humidity</small><b id="public-humidity">—</b></span><span><small>Wind</small><b id="public-wind">—</b></span><span><small>High / low</small><b id="public-highlow">—</b></span></div>
-      </article>
-      <div class="city-energy">
-        <article><small>STATE HOME PRICE</small><strong id="public-rate">—</strong><span id="public-rate-note">EIA residential average</span></article>
-        <article><small>STATE HOME USAGE</small><strong id="public-usage">—</strong><span id="public-usage-note">EIA monthly average</span></article>
-        <article><small>SOLAR CONDITIONS TODAY</small><strong id="public-solar">—</strong><span>sunlight energy per square meter</span></article>
+      <p class="form-status" data-form-status>Choose a U.S. city to load local weather and state electricity data.</p>
+    </section>
+
+    <section class="answer-section" aria-labelledby="answers-title">
+      <div class="section-heading">
+        <span class="eyebrow">ONE QUESTION PER PAGE</span>
+        <h2 id="answers-title">Clear answers, <em>room to breathe.</em></h2>
+        <p>Each dashboard focuses on one decision, so you never have to scan a wall of charts.</p>
+      </div>
+      <div class="answer-grid">
+        <article class="answer-card card-yellow">
+          <span class="card-number">01</span><div class="card-icon">☀</div>
+          <h3>Is solar worth it here?</h3>
+          <p>Score local solar conditions and estimate what a typical 6 kW rooftop system could produce.</p>
+          <a class="button button-coral" href="solar.html">Check solar value <span>→</span></a>
+        </article>
+        <article class="answer-card card-blue">
+          <span class="card-number">02</span><div class="card-icon">◒</div>
+          <h3>Does weather raise energy use?</h3>
+          <p>See heating and cooling pressure, then compare city temperatures with state household usage.</p>
+          <a class="button button-sky" href="weather-impact.html">See weather impact <span>→</span></a>
+        </article>
+        <article class="answer-card card-green">
+          <span class="card-number">03</span><div class="card-icon">ϟ</div>
+          <h3>What powers my state?</h3>
+          <p>Learn the leading electricity source—wind, water, sun, gas, coal, or nuclear—and what it means.</p>
+          <a class="button button-green" href="power.html">Explore power sources <span>→</span></a>
+        </article>
       </div>
     </section>
 
-    <section id="insights" class="section cream">
-      <span class="eyebrow">CITY & STATE CHARTS</span><h2>See the patterns, <em>not just numbers.</em></h2>
-      <p id="chart-context">Choose a city to build these charts from public weather and electricity data.</p>
-      <div class="dashboard public-dashboard">
-        <article class="chart wide"><h3>Temperature for the next 7 days</h3><small>Daily high and low in °F</small><div id="temperature-chart" class="public-chart empty-chart">Choose a city above</div></article>
-        <article class="chart"><h3>Solar conditions for the next 7 days</h3><small>Sunlight energy in kWh per square meter</small><div id="solar-chart" class="public-bars empty-chart">Choose a city above</div></article>
-        <article class="chart"><h3>State home electricity price</h3><small>Cents per kWh by year from EIA</small><div id="rate-chart" class="public-chart empty-chart">Choose a U.S. city above</div></article>
-        <article class="chart"><h3>State average home electricity use</h3><small>Average kWh per month by year from EIA</small><div id="state-usage-chart" class="public-chart empty-chart">Choose a U.S. city above</div></article>
-        <article class="chart"><h3>Weather and state electricity use</h3><div class="state-correlation"><strong id="public-correlation">—</strong><span id="public-correlation-note">Choose a U.S. city to compare yearly temperature with state home electricity use.</span></div></article>
+    <section class="snapshot-section" aria-live="polite">
+      <div class="section-heading compact-heading">
+        <span class="eyebrow">YOUR LOCAL SNAPSHOT</span>
+        <h2 id="snapshot-title">Choose a city to see the essentials.</h2>
       </div>
-      <div class="plain-note"><strong>What does the connection score mean?</strong><p>A score near 1 or -1 means weather and electricity use changed together more often. A score near 0 means the connection was weak. This does not prove weather caused the change.</p></div>
+      <div class="snapshot-grid">
+        <article><span>Current weather</span><strong id="snapshot-weather">—</strong><small id="snapshot-weather-note">Live Open-Meteo conditions</small></article>
+        <article><span>Solar resource today</span><strong id="snapshot-solar">—</strong><small>Sunlight energy per square meter</small></article>
+        <article><span>State home average</span><strong id="snapshot-usage">—</strong><small id="snapshot-usage-note">EIA monthly household use</small></article>
+        <article><span>Electricity price</span><strong id="snapshot-price">—</strong><small id="snapshot-price-note">EIA residential average</small></article>
+      </div>
     </section>
-    <section class="personal-cta"><span class="eyebrow">YOUR PRIVATE DATA</span><h2>Want to understand <em>your own bill?</em></h2><p>Import a utility CSV or enter daily use on a separate page. Your records stay in your browser.</p><a class="pill dark" href="energy.html">Open Your Energy →</a></section>
+
+    <section class="personal-callout">
+      <div><span class="eyebrow">HAVE A UTILITY BILL?</span><h2>Go from city averages to <em>your real usage.</em></h2><p>Import your own records in a private browser workspace and measure how your household responds to weather.</p></div>
+      <a class="button button-violet" href="energy.html">Analyze my bill <span>→</span></a>
+    </section>
   </main>
-  <footer><strong>WattWeather</strong><span>Public data from Open-Meteo and the U.S. Energy Information Administration.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
-  <script src="landing.js"></script>
+
+  <footer><a class="brand" href="index.html"><span class="brand-sun">☀</span><span>WattWeather</span></a><span>Weather intelligence for better energy decisions.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
+  <script src="dashboard.js"></script>
 </body>
 </html>

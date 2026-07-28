@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Estimate whether rooftop solar is worth exploring in your city.">
+  <title>Solar Value — WattWeather</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body data-page="solar">
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-sun">☀</span><span>WattWeather</span></a>
+    <nav><a href="index.html">Overview</a><a class="active" href="solar.html">Solar value</a><a href="weather-impact.html">Weather impact</a><a href="power.html">Power sources</a></nav>
+    <a class="button button-coral header-cta" href="#location">Change city</a>
+  </header>
+  <main>
+    <section class="page-hero solar-hero">
+      <div><span class="eyebrow">SOLAR VALUE</span><h1>Is solar worth it<br>in <em id="solar-place-heading">your city?</em></h1><p>Use local sunlight and state electricity prices to get a practical first look before calling an installer.</p></div>
+      <div class="hero-verdict"><span>LOCAL SOLAR SIGNAL</span><strong id="solar-score">—</strong><b id="solar-verdict">Choose a city</b><small id="solar-verdict-note">We’ll turn the next seven days of solar resource into a simple screening score.</small></div>
+    </section>
+    <section id="location" class="location-strip">
+      <form class="location-form" data-location-form><div class="city-picker"><input data-city-input autocomplete="off" placeholder="Search a U.S. city"><div class="city-suggestions" data-city-suggestions hidden></div></div><button class="button button-coral">Update solar report <span>→</span></button></form>
+      <p class="form-status" data-form-status>Solar estimates use public weather data and a standard 6 kW system assumption.</p>
+    </section>
+    <section class="report-shell">
+      <div class="metric-row">
+        <article><span>Today’s solar resource</span><strong id="solar-today">—</strong><small>kWh/m²</small></article>
+        <article><span>7-day daily average</span><strong id="solar-average">—</strong><small>kWh/m²/day</small></article>
+        <article><span>Est. 6 kW annual output</span><strong id="solar-output">—</strong><small>screening estimate</small></article>
+        <article><span>Est. annual bill value</span><strong id="solar-savings">—</strong><small id="solar-rate-note">using state home rate</small></article>
+      </div>
+      <div class="report-grid">
+        <article class="report-card span-two"><div class="card-heading"><div><span class="eyebrow">NEXT 7 DAYS</span><h2>Sunshine forecast</h2></div><span class="legend-dot">Daily solar resource</span></div><div id="solar-bars" class="solar-bars"><div class="empty-state">Choose a city to build the forecast.</div></div></article>
+        <article class="report-card"><span class="eyebrow">WHAT THE SCORE MEANS</span><h2 id="solar-answer">Start with a city.</h2><p id="solar-explanation">A higher score means the recent solar outlook and local electricity price make rooftop solar more promising.</p><div class="score-scale"><span>Conditional</span><i><b id="score-marker"></b></i><span>Strong</span></div></article>
+        <article class="report-card"><span class="eyebrow">BEFORE YOU BUY</span><h2>Sunlight is only step one.</h2><ul class="check-list"><li>Check roof direction, shade, and age.</li><li>Compare net-metering and utility rules.</li><li>Get multiple quotes with the same system size.</li><li>Verify tax incentives with an eligible professional.</li></ul></article>
+      </div>
+      <div class="method-note"><strong>Screening estimate, not a quote.</strong><span>Output assumes a 6 kW system, 80% system efficiency, and the current 7-day solar forecast as a simple annual proxy. Roof conditions, seasonal variation, rates, and incentives can materially change the result.</span></div>
+    </section>
+    <section class="next-page"><div><span class="eyebrow">NEXT QUESTION</span><h2>Does the weather change energy demand?</h2></div><a class="button button-sky" href="weather-impact.html">See weather impact <span>→</span></a></section>
+  </main>
+  <footer><a class="brand" href="index.html"><span class="brand-sun">☀</span><span>WattWeather</span></a><span>Public weather from Open-Meteo. State prices from the U.S. EIA.</span><a href="index.html">Back to overview</a></footer>
+  <script src="dashboard.js"></script>
+</body>
+</html>
