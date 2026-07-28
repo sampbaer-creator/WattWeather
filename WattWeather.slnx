@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/app/">
+    <Project Path="app/WattWeather.App.csproj" />
+  </Folder>
+  <Folder Name="/server/">
+    <Project Path="server/WattWeather.Server.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WattWeather.Tests.csproj" />
+  </Folder>
+</Solution>

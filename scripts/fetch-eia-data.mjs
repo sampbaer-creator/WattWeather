@@ -51,8 +51,8 @@ for (const state of Object.values(states)) {
   state.history.sort((a, b) => a.period.localeCompare(b.period));
 }
 
-await mkdir("data", { recursive: true });
-await writeFile("data/eia-state-energy.json", `${JSON.stringify({
+await mkdir("server/Data", { recursive: true });
+await writeFile("server/Data/eia-state-energy.json", `${JSON.stringify({
   generatedAtUtc: new Date().toISOString(),
   methodology: "Annual residential sales divided by residential customers and 12; prices are state residential averages.",
   states

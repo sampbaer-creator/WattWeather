@@ -1,0 +1,26 @@
+<div class="city-picker">
+    <div class="city-input-row">
+        <label class="sr-only" for="@InputId">City or ZIP code</label>
+        <input id="@InputId" value="@Query" @oninput="HandleInput" @onkeydown="HandleKeyDown"
+               autocomplete="off" placeholder="Search a U.S. city" />
+        <button class="btn btn-accent" type="button" @onclick="UseFirstResultAsync" disabled="@IsBusy">
+            @(IsBusy ? "Searching…" : ButtonText)
+        </button>
+    </div>
+    @if (Results.Count > 0)
+    {
+        <div class="city-results">
+            @foreach (var city in Results)
+            {
+                <button type="button" @onclick="() => SelectAsync(city)">
+                    <strong>@city.Name</strong>
+                    <span>@string.Join(", ", new[] { city.State, city.Country }.Where(value => !string.IsNullOrWhiteSpace(value)))</span>
+                </button>
+            }
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Status))
+    {
+        <p class="field-status @(HasError ? "error" : "")">@Status</p>
+    }
+</div>

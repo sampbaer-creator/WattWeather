@@ -23,12 +23,12 @@ jobs:
       - name: Publish updated data
         shell: bash
         run: |
-          if [ -z "$(git status --porcelain -- data/eia-state-energy.json)" ]; then
+          if [ -z "$(git status --porcelain -- server/Data/eia-state-energy.json)" ]; then
             echo "EIA data is already current."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/eia-state-energy.json
+          git add server/Data/eia-state-energy.json
           git commit -m "Update public EIA energy statistics"
           git push

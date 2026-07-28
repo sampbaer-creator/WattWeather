@@ -1,0 +1,25 @@
+name: .NET checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore
+        run: dotnet restore WattWeather.slnx
+      - name: Build
+        run: dotnet build WattWeather.slnx -c Release --no-restore
+      - name: Test
+        run: dotnet test WattWeather.slnx -c Release --no-build
+      - name: Publish backend
+        run: dotnet publish server/WattWeather.Server.csproj -c Release --no-restore -o artifacts/publish

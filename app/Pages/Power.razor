@@ -1,0 +1,52 @@
+@page "/power"
+@inherits LocationPageBase
+
+<PageTitle>Power sources — WattWeather</PageTitle>
+
+<section class="page-hero">
+    <div><span class="kicker">STATE GRID / LEADING SOURCE</span><h1>Understand what keeps the <em>lights on.</em></h1><p>Electricity can come from water, wind, sun, nuclear heat, natural gas, petroleum, or coal. Start with the source that typically leads your state.</p></div>
+    <div class="source-card"><span>LEADING STATE SOURCE</span><strong>@(Profile?.Symbol ?? "GRID")</strong><b>@(Profile?.Name ?? "Choose a city")</b><small>@(City?.State ?? "Your state")</small></div>
+</section>
+
+<section class="search-band compact">
+    <div><span class="kicker">LOCATION</span><h2>@(City?.Label ?? "Choose a U.S. city")</h2></div>
+    <CityPicker Selected="LoadCityAsync" ButtonText="Show my grid" />
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Error)) { <div class="alert">@Error</div> }
+
+<section class="page-section">
+    <div class="answer-strip"><span class="kicker">THE SHORT ANSWER</span><h2>@(Profile is null ? "Choose a city to reveal its leading source." : $"{Profile.Name} typically leads {City?.State}'s electricity mix.")</h2><p>@Profile?.Description</p></div>
+    <div class="metric-grid">
+        <article><span>Leading source</span><strong>@(Profile?.Name ?? "—")</strong><small>recent state profile</small></article>
+        <article><span>Category</span><strong>@(Profile?.Category ?? "—")</strong><small>renewable, fossil, nuclear, mixed</small></article>
+        <article><span>State home rate</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.ResidentialPriceCents:0.00}¢")</strong><small>per kWh · EIA</small></article>
+        <article><span>State home use</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.AverageMonthlyKwh:N0}")</strong><small>kWh/month · EIA</small></article>
+    </div>
+    <div class="source-grid">
+        @foreach (var source in Sources)
+        {
+            <article class="@(Profile?.Name == source.Name ? "selected" : "")"><b>@source.Symbol</b><h3>@source.Name</h3><p>@source.Copy</p></article>
+        }
+    </div>
+    <div class="method">State orientation—not power from a specific outlet. Electricity crosses state lines, and the generation mix changes throughout the day.</div>
+</section>
+
+@code {
+    private PowerProfile? Profile { get; set; }
+    private static readonly (string Symbol, string Name, string Copy)[] Sources =
+    [
+        ("H₂O", "Hydropower", "Flowing water turns turbines."),
+        ("AIR", "Wind", "Moving air powers turbines."),
+        ("SUN", "Solar", "Panels convert sunlight directly."),
+        ("GAS", "Natural gas", "Flexible plants burn gas."),
+        ("ATOM", "Nuclear", "Fission supplies steady output."),
+        ("COAL", "Coal", "Dispatchable but carbon intensive.")
+    ];
+
+    protected override Task OnLocationLoadedAsync()
+    {
+        Profile = Calculations.GetPowerProfile(City?.State);
+        return Task.CompletedTask;
+    }
+}

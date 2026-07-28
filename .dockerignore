@@ -1,0 +1,9 @@
+.git
+.github
+.vscode
+.env
+**/bin
+**/obj
+artifacts
+web-run*.log
+README.md

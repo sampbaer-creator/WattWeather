@@ -1,73 +1,64 @@
 # WattWeather
 
-WattWeather turns public weather and electricity data into simple answers about solar panels, energy use, and local power.
+WattWeather is a C# energy dashboard that answers one practical question at a time: whether solar is worth exploring locally, how weather affects demand, what powers a state, which confirmed discounts reduce a quote, and how a household's own usage changes over time.
 
-**Live app:** https://sampbaer-creator.github.io/WattWeather/
+The interface is intentionally split into focused pages instead of one crowded dashboard:
 
-## What you can explore
-
-| Page | Question it answers |
+| Page | Question |
 | --- | --- |
-| [Overview](https://sampbaer-creator.github.io/WattWeather/) | What is my city's weather and energy snapshot? |
-| [Solar value](https://sampbaer-creator.github.io/WattWeather/solar.html) | Is a typical 6 kW, 15-panel solar system worth exploring here? |
-| [Solar discounts](https://sampbaer-creator.github.io/WattWeather/incentives.html) | Which rebates or programs could reduce the cost? |
-| [Weather impact](https://sampbaer-creator.github.io/WattWeather/weather-impact.html) | Could hot or cold weather increase energy demand? |
-| [Power sources](https://sampbaer-creator.github.io/WattWeather/power.html) | Which electricity source typically leads my state? |
-| [My energy](https://sampbaer-creator.github.io/WattWeather/energy.html) | How does my own electricity use relate to weather? |
+| Overview | What is this city's weather and energy snapshot? |
+| Solar | What could a typical 6 kW, 15-panel system produce? |
+| Discounts | Which confirmed rebates reduce a solar quote? |
+| Weather | Are current temperatures pushing heating or cooling demand? |
+| Power | Which source typically leads this state's electricity generation? |
+| My energy | What patterns exist in the visitor's own bill records? |
 
-The Discounts page explains the current federal homeowner-credit status, common state and utility programs, and includes a calculator for rebates the visitor has confirmed.
+Solar output, savings, weather relationships, and discounts are screening estimates—not quotes, guarantees, tax advice, or a substitute for current program rules.
 
-## How it works
+## Architecture
 
-- Open-Meteo supplies city search, current conditions, forecasts, solar radiation, and historical temperature.
-- The U.S. Energy Information Administration supplies state residential electricity price and usage statistics.
-- A monthly GitHub Actions workflow refreshes the checked-in EIA snapshot without exposing an API key to visitors.
-- Personal bill records and analysis stay in the visitor's browser through local storage.
-- The app uses plain HTML, CSS, and JavaScript. It has no framework, package installation, server runtime, database, or production build step.
+- `app/` — .NET 10 Blazor WebAssembly UI and C# calculations
+- `server/` — ASP.NET Core API, Open-Meteo proxy, cached EIA data, security middleware
+- `tests/` — xUnit coverage for the core calculation rules
+- `scripts/` — monthly EIA snapshot refresh
+- `Dockerfile` — reproducible non-root production image
+- `render.yaml` — health-checked Render deployment with deploys gated on passing CI
 
-Solar output, savings, weather relationships, and discounts are screening estimates—not installer quotes, guarantees, or tax advice.
+The browser calls only same-origin `/api` endpoints. The server validates inputs, hides upstream implementation details, applies per-IP API rate limits, caches public responses, compresses output, limits request bodies, removes the Kestrel server header, and sends CSP, HSTS, frame, MIME-sniffing, referrer, permissions, and cross-origin isolation headers. Personal energy records remain in browser local storage and are not uploaded.
 
 ## Run locally
 
-From the repository root:
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0), then run:
 
 ```powershell
-python -m http.server 8080 --bind 127.0.0.1
+dotnet restore WattWeather.slnx
+dotnet run --project server/WattWeather.Server.csproj
 ```
 
-Open http://127.0.0.1:8080/.
+Open the local address printed by ASP.NET Core.
 
-## Verify changes
-
-Node.js is needed only for repository checks and the EIA refresh script:
+## Verify
 
 ```powershell
-node --check dashboard.js
-node --check pages.js
-node scripts/validate-site.mjs
+dotnet build WattWeather.slnx -c Release
+dotnet test WattWeather.slnx -c Release
+dotnet publish server/WattWeather.Server.csproj -c Release -o artifacts/publish
 ```
 
-The validator checks all six pages, internal routes, referenced assets, duplicate element IDs, and state-data coverage. GitHub runs the same checks on every push and pull request.
+GitHub Actions runs the same build, test, and publish checks on pushes and pull requests. A separate monthly workflow refreshes `server/Data/eia-state-energy.json` using the repository's EIA secret.
 
-## Project structure
+## Deploy
 
-```text
-index.html
-solar.html
-incentives.html
-weather-impact.html
-power.html
-energy.html
+The app requires an ASP.NET Core host; GitHub Pages cannot run its backend. The checked-in Render Blueprint builds the Docker image, checks `/health`, and deploys only after CI succeeds.
 
-dashboard.css / dashboard.js       Shared public dashboard UI and logic
-pages.css / pages-extra.css        Personal-energy workspace styles
-pages.js                           Personal-energy analysis
-data/eia-state-energy.json         Cached EIA state statistics
-scripts/fetch-eia-data.mjs         Secure monthly data refresh
-scripts/validate-site.mjs          Dependency-free repository checks
-.github/workflows/                 Validation and EIA refresh automation
-```
+1. Open [Render's New Blueprint page](https://dashboard.render.com/blueprints).
+2. Connect `sampbaer-creator/WattWeather`.
+3. Apply the detected `render.yaml`.
 
-## Deployment
+After that first connection, pushes to the selected branch deploy automatically after GitHub checks pass. The same Dockerfile can be used on any container host that supplies HTTPS at the edge and maps its public port to container port `8080`.
 
-GitHub Pages serves the repository directly. Because the app is static, deploying an update only requires committing and pushing the changed files to the configured Pages branch.
+## Public data
+
+- [Open-Meteo](https://open-meteo.com/) provides city search, current conditions, forecasts, solar radiation, and historical temperature.
+- [U.S. Energy Information Administration](https://www.eia.gov/opendata/) provides state residential price and usage statistics.
+- [DSIRE](https://programs.dsireusa.org/system/program) and current IRS guidance are linked for program research; eligibility must be verified with the responsible agency or utility.
