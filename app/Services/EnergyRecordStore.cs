@@ -58,10 +58,22 @@ public sealed class EnergyRecordStore(IJSRuntime js)
 
     public async Task<int> ImportCsvAsync(string csv)
     {
-        var lines = csv.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (lines.Length < 2)
+        var parsed = ParseDailyCsv(csv);
+        foreach (var record in parsed)
         {
-            throw new InvalidOperationException("The CSV needs a header and at least one data row.");
+            _records.RemoveAll(existing => existing.Date == record.Date);
+            _records.Add(record);
+        }
+        await SaveAsync();
+        return parsed.Count;
+    }
+
+    public static IReadOnlyList<EnergyRecord> ParseDailyCsv(string csv)
+    {
+        var lines = csv.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (lines.Length < 4)
+        {
+            throw new InvalidOperationException("Full-history analysis needs at least three daily records. For one monthly bill, use the quick comparison on Overview.");
         }
         if (lines.Length > 5_001)
         {
@@ -78,9 +90,11 @@ public sealed class EnergyRecordStore(IJSRuntime js)
             throw new InvalidOperationException("CSV columns must include date and kWh.");
         }
 
-        var imported = 0;
+        var parsed = new List<EnergyRecord>();
+        var rowNumber = 1;
         foreach (var line in lines.Skip(1))
         {
+            rowNumber++;
             var cells = line.Split(',').Select(value => value.Trim().Trim('"')).ToArray();
             if (cells.Length <= Math.Max(dateIndex, usageIndex) ||
                 !DateOnly.TryParse(cells[dateIndex], CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ||
@@ -88,7 +102,7 @@ public sealed class EnergyRecordStore(IJSRuntime js)
                 !double.IsFinite(usage) ||
                 usage is <= 0 or > 1_000_000)
             {
-                continue;
+                throw new InvalidOperationException($"CSV row {rowNumber} has an invalid date or kWh value. Fix the row and import again.");
             }
 
             decimal? cost = null;
@@ -107,13 +121,21 @@ public sealed class EnergyRecordStore(IJSRuntime js)
                     : null;
             }
 
-            _records.RemoveAll(existing => existing.Date == date);
-            _records.Add(new EnergyRecord { Date = date, KilowattHours = usage, Cost = cost, MeanTemperature = temperature });
-            imported++;
+            parsed.Add(new EnergyRecord { Date = date, KilowattHours = usage, Cost = cost, MeanTemperature = temperature });
         }
 
-        await SaveAsync();
-        return imported;
+        if (parsed.Select(record => record.Date).Distinct().Count() != parsed.Count)
+        {
+            throw new InvalidOperationException("The CSV contains duplicate dates. Keep one daily record per date and import again.");
+        }
+        var dates = parsed.Select(record => record.Date).Order().ToList();
+        var gaps = dates.Zip(dates.Skip(1), (left, right) => right.DayNumber - left.DayNumber).Order().ToList();
+        var medianGap = gaps[gaps.Count / 2];
+        if (medianGap > 3)
+        {
+            throw new InvalidOperationException("These records look weekly or monthly. Full-history weather matching requires daily rows; use the one-bill comparison on Overview for a monthly bill.");
+        }
+        return parsed;
     }
 
     private async Task SaveAsync()

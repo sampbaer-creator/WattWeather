@@ -38,6 +38,42 @@ public sealed class EnergyCalculations
         return new DemandEstimate(heating, cooling, summary);
     }
 
+    public static DegreeDaySummary CalculateDegreeDays(IEnumerable<double> meanTemperatures, double baseline = 65)
+    {
+        var temperatures = meanTemperatures.ToList();
+        return new DegreeDaySummary(
+            temperatures.Sum(value => Math.Max(0, baseline - value)),
+            temperatures.Sum(value => Math.Max(0, value - baseline)));
+    }
+
+    public static BillComparison CompareBill(decimal totalCost, double? kilowattHours, StateEnergy state)
+    {
+        if (totalCost < 0 || (kilowattHours.HasValue && kilowattHours <= 0))
+        {
+            throw new ArgumentOutOfRangeException(nameof(totalCost), "Enter a valid bill cost and optional kWh value.");
+        }
+        if (state.AverageMonthlyKwh <= 0 || state.ResidentialPriceCents <= 0)
+        {
+            throw new InvalidOperationException("State comparison data is unavailable.");
+        }
+
+        var estimated = !kilowattHours.HasValue;
+        var usage = kilowattHours ?? (double)totalCost / (state.ResidentialPriceCents / 100);
+        var difference = (usage - state.AverageMonthlyKwh) / state.AverageMonthlyKwh * 100;
+        var band = difference > 10 ? BillComparisonBand.Above :
+            difference < -10 ? BillComparisonBand.Below : BillComparisonBand.Near;
+        var (headline, guidance) = band switch
+        {
+            BillComparisonBand.Above => ("Above the state household average", "Your bill is worth exploring further to see what drove the difference."),
+            BillComparisonBand.Below => ("Below the state household average", "See whether this lower-use pattern holds across more months."),
+            _ => ("Near the state household average", "Weather may not be the main driver for this billing period.")
+        };
+        return new BillComparison(usage, estimated, difference, band, headline, guidance);
+    }
+
+    public static string BuildPublicShareQuery(CityLocation city) =>
+        $"?city={Uri.EscapeDataString(city.Name)}&state={Uri.EscapeDataString(city.State ?? "")}";
+
     public static DiscountEstimate CalculateDiscount(decimal quote, decimal stateOrLocal, decimal utility)
     {
         quote = Math.Max(0, quote);
