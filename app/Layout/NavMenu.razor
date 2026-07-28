@@ -1,17 +1,8 @@
 <header class="site-header">
     <a class="brand" href=""><span>W</span> WattWeather</a>
-    <button class="menu-toggle" type="button" @onclick="ToggleNavMenu" aria-label="Toggle navigation">Menu</button>
-    <nav class="@NavMenuCssClass" @onclick="CloseMenu">
-        <NavLink href="" Match="NavLinkMatch.All">Overview</NavLink>
-        <NavLink href="energy">My Energy</NavLink>
-        <NavLink href="architecture">Architecture</NavLink>
+    <nav>
+        <NavLink href="" Match="NavLinkMatch.All">Weather</NavLink>
+        <NavLink href="architecture">How it works</NavLink>
     </nav>
-    <NavLink class="header-cta" href="">Check my city <span>↗</span></NavLink>
+    <a class="header-cta" href="#weather-search">Check a place <span>↘</span></a>
 </header>
-
-@code {
-    private bool _collapsed = true;
-    private string NavMenuCssClass => _collapsed ? "" : "open";
-    private void ToggleNavMenu() => _collapsed = !_collapsed;
-    private void CloseMenu() => _collapsed = true;
-}

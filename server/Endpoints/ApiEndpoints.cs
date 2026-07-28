@@ -36,26 +36,6 @@ public static class ApiEndpoints
             return Results.Ok(await weather.GetForecastAsync(latitude, longitude, cancellationToken));
         }).CacheOutput("weather");
 
-        api.MapGet("/states", async (StateEnergyRepository repository, CancellationToken cancellationToken) =>
-            Results.Ok(await repository.GetDatasetAsync(cancellationToken)))
-            .CacheOutput("states");
-
-        api.MapGet("/correlation", async (
-            [FromQuery] double latitude,
-            [FromQuery] double longitude,
-            [FromQuery] string state,
-            OpenMeteoClient weather,
-            CancellationToken cancellationToken) =>
-        {
-            state = state.Trim();
-            if (!ValidCoordinates(latitude, longitude) || state.Length is < 2 or > 60)
-            {
-                return Results.BadRequest(new { error = "Coordinates or state are invalid." });
-            }
-
-            return Results.Ok(await weather.GetCorrelationAsync(latitude, longitude, state, cancellationToken));
-        }).CacheOutput("correlation");
-
         return endpoints;
     }
 

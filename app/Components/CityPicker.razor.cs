@@ -7,7 +7,7 @@ namespace WattWeather.App.Components;
 
 public partial class CityPicker : IAsyncDisposable
 {
-    [Inject] private WeatherEnergyService Api { get; set; } = default!;
+    [Inject] private WeatherService Api { get; set; } = default!;
     [Inject] private LocationState Location { get; set; } = default!;
     [Parameter] public EventCallback<CityLocation> Selected { get; set; }
     [Parameter] public string ButtonText { get; set; } = "Use this city";

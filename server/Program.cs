@@ -31,8 +31,6 @@ builder.Services.AddOutputCache(options =>
 {
     options.AddPolicy("locations", policy => policy.Expire(TimeSpan.FromHours(1)).SetVaryByQuery("query"));
     options.AddPolicy("weather", policy => policy.Expire(TimeSpan.FromMinutes(10)).SetVaryByQuery("latitude", "longitude"));
-    options.AddPolicy("states", policy => policy.Expire(TimeSpan.FromHours(6)));
-    options.AddPolicy("correlation", policy => policy.Expire(TimeSpan.FromHours(12)).SetVaryByQuery("latitude", "longitude", "state"));
 });
 builder.Services.AddRateLimiter(options =>
 {
@@ -60,7 +58,6 @@ builder.Services.AddRateLimiter(options =>
         });
     });
 });
-builder.Services.AddSingleton<StateEnergyRepository>();
 builder.Services.AddHttpClient<OpenMeteoClient>(client =>
 {
     client.BaseAddress = new Uri("https://api.open-meteo.com/");

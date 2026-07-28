@@ -1,18 +1,14 @@
 @page "/architecture"
-<PageTitle>Architecture — WattWeather</PageTitle>
+<PageTitle>How WattWeather works</PageTitle>
 <section class="page-hero">
-    <div><span class="kicker">TECHNICAL REVIEW</span><h1>A .NET pipeline built for <em>clarity and privacy.</em></h1><p>The GitHub Pages edition is a Blazor WebAssembly application. An optional ASP.NET Core edition proxies public data through validated, cached, rate-limited API endpoints.</p></div>
+    <div><span class="kicker">UNDER THE CLOUDS</span><h1>Small app. <em>Solid weather stack.</em></h1><p>WattWeather is a focused .NET weather app built to make live API data feel fast, friendly, and clear.</p></div>
 </section>
 <section class="page-section">
-    <div class="split-panel">
-        <article><span class="kicker">GITHUB PAGES</span><h2>Static Blazor WebAssembly</h2><p>The browser calls public Open-Meteo endpoints and reads a checked-in EIA state snapshot. No API secret is shipped to the client. Personal daily records remain in browser local storage.</p></article>
-        <article><span class="kicker">OPTIONAL SERVER</span><h2>ASP.NET Core API</h2><p>The server edition provides same-origin endpoints, input validation, caching, rate limits, and security headers. It does not turn browser-local records into server data.</p></article>
-    </div>
-    <div class="method"><strong>Product boundary:</strong> WattWeather answers one question: whether weather may help explain an electricity bill. Local weather is compared with statewide EIA averages; personal daily records remain browser-local. The app intentionally does not estimate solar ROI, incentives, taxes, or rebates.</div>
-    <div class="section-intro spaced"><span class="kicker">ANALYTICS</span><h2>Explainable methods before complexity.</h2></div>
     <div class="feature-grid">
-        <article class="feature-card"><span>PEARSON</span><h3>Correlation</h3><p>Measures linear association; correlation does not establish causation.</p></article>
-        <article class="feature-card"><span>HDD / CDD65</span><h3>Weather pressure</h3><p>Daily degrees below or above the 65°F baseline.</p></article>
-        <article class="feature-card"><span>IQR</span><h3>Anomaly review</h3><p>Flags high records above Q3 + 1.5 × IQR without assuming normal data.</p></article>
+        <article class="feature-card"><span>01 / BLAZOR</span><h3>C# in the browser</h3><p>Blazor WebAssembly powers the search, responsive forecast, sharing, and loading states.</p></article>
+        <article class="feature-card"><span>02 / OPEN-METEO</span><h3>Live weather</h3><p>Geocoding finds U.S. cities and ZIP codes; forecast endpoints return current conditions and seven daily outlooks.</p></article>
+        <article class="feature-card"><span>03 / ASP.NET</span><h3>Optional secure API</h3><p>The server edition validates coordinates, rate-limits requests, caches responses, and adds security headers.</p></article>
+        <article class="feature-card"><span>04 / XUNIT</span><h3>Tested details</h3><p>Tests cover weather-code labels, emoji choices, wind direction, URL construction, input validation, and backend security.</p></article>
     </div>
+    <div class="method"><strong>Privacy:</strong> no account and no personal tracking. The browser saves only the last location so the forecast is ready when you return.</div>
 </section>

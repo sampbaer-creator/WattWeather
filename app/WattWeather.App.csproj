@@ -11,10 +11,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.10" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="..\server\Data\eia-state-energy.json"
-             Link="wwwroot\data\eia-state-energy.json"
-             CopyToOutputDirectory="PreserveNewest"
-             CopyToPublishDirectory="PreserveNewest" />
-  </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime Js
 
-<PageTitle>WattWeather — Weather and electricity insight</PageTitle>
+<PageTitle>@ShareTitle</PageTitle>
 <HeadContent>
     <meta property="og:title" content="@ShareTitle" />
     <meta property="og:description" content="@ShareDescription" />
@@ -11,131 +11,99 @@
     <meta name="twitter:description" content="@ShareDescription" />
 </HeadContent>
 
-<section class="hero">
-    <div class="hero-copy">
-        <span class="kicker">WEATHER / ELECTRICITY INTELLIGENCE</span>
-        <h1>Is the weather driving up <em>your electric bill?</em></h1>
-        <p>Check your city's climate pressure instantly—then see how your household stacks up.</p>
-        <div class="hero-actions"><a class="btn btn-dark" href="#city">Explore my city <span>↓</span></a></div>
-        <div class="proof"><span>Public data</span><span>No account</span><span>Plain English</span></div>
+<section class="weather-hero">
+    <div>
+        <span class="kicker">YOUR WEATHER, MINUS THE CLUTTER</span>
+        <h1>What’s it doing <em>outside?</em></h1>
+        <p>Type any U.S. city or ZIP code. Get current conditions, today’s details, and a friendly seven-day forecast.</p>
+        <div class="proof"><span>Live weather</span><span>No account</span><span>U.S. locations</span></div>
     </div>
-    <div class="product-preview">
-        <div class="preview-bar"><span>WATTWEATHER / LIVE SIGNAL</span></div>
-        <div class="preview-body">
-            <span class="preview-label">CURRENT LOCATION</span><strong>@(City?.Name ?? "Choose your city")</strong>
-            <div class="preview-grid">
-                <article><span>LOCAL WEATHER</span><b>@(Forecast is null ? "—" : $"{Math.Round(Forecast.Current.Temperature)}°F")</b><small>@(Forecast is null ? "Waiting for data" : EnergyCalculations.WeatherLabel(Forecast.Current.WeatherCode))</small></article>
-                <article class="signal"><span>STATE HOME USE</span><b>@(StateEnergy is null ? "—" : $"{StateEnergy.AverageMonthlyKwh:N0}")</b><small>average kWh/month · EIA</small></article>
-            </div>
-        </div>
+    <div class="weather-orb @WeatherMood">
+        <span class="weather-emoji">@WeatherPresentation.Emoji(Forecast?.Current.WeatherCode ?? 0, Forecast?.Current.IsDay != 0)</span>
+        <strong>@(Forecast is null ? "Hello!" : $"{Math.Round(Forecast.Current.Temperature)}°")</strong>
+        <small>@(Forecast is null ? "Pick a place to begin" : WeatherPresentation.Label(Forecast.Current.WeatherCode))</small>
     </div>
 </section>
 
-<section id="city" class="search-band">
-    <div><span class="kicker">START HERE</span><h2>What is your city's energy story?</h2></div>
-    <CityPicker Selected="SelectCityAsync" ButtonText="Explore my city" />
+<section id="weather-search" class="search-band">
+    <div><span class="kicker">FIND YOUR FORECAST</span><h2>City or ZIP code</h2></div>
+    <CityPicker Selected="SelectCityAsync" ButtonText="Show me the weather" />
 </section>
+
 @if (!string.IsNullOrWhiteSpace(Error)) { <div class="alert">@Error</div> }
 @if (Loading)
 {
-    <section class="snapshot snapshot-skeleton" aria-label="Loading city weather and state energy data" aria-busy="true">
+    <section class="snapshot snapshot-skeleton" aria-label="Loading weather" aria-busy="true">
         <div class="skeleton-line wide"></div>
         <div class="metric-grid">
-            @for (var index = 0; index < 6; index++)
-            {
-                <article><span class="skeleton-line"></span><strong class="skeleton-block"></strong><small class="skeleton-line"></small></article>
-            }
+            @for (var index = 0; index < 6; index++) { <article><span class="skeleton-line"></span><strong class="skeleton-block"></strong><small class="skeleton-line"></small></article> }
         </div>
     </section>
 }
 
 @if (!Loading && City is not null && Forecast is not null)
 {
-    <section class="snapshot">
-        <div><span class="kicker">PUBLIC CITY SNAPSHOT</span><h2>@City.Name, @City.State</h2></div>
-        <div class="metric-grid">
-            <article><span>Current temperature</span><strong>@Math.Round(Forecast.Current.Temperature)°F</strong><small>@EnergyCalculations.WeatherLabel(Forecast.Current.WeatherCode)</small></article>
-            <article><span>Feels like</span><strong>@Math.Round(Forecast.Current.FeelsLike)°F</strong><small>local Open-Meteo weather</small></article>
-            <article><span>Heating pressure</span><strong>@Demand.HeatingPressure.ToString("0")°</strong><small>below the 65°F baseline</small></article>
-            <article><span>Cooling pressure</span><strong>@Demand.CoolingPressure.ToString("0")°</strong><small>above the 65°F baseline</small></article>
-            <article><span>State home use</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.AverageMonthlyKwh:N0}")</strong><small>average kWh/month · EIA</small></article>
-            <article><span>State home rate</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.ResidentialPriceCents:0.00}¢")</strong><small>per kWh · EIA @StateEnergy?.Period</small></article>
+    <section class="weather-dashboard">
+        <div class="weather-heading">
+            <div><span class="kicker">RIGHT NOW</span><h2>@City.Name, @City.State</h2><p>@WeatherPresentation.Label(Forecast.Current.WeatherCode) · @Forecast.TimezoneAbbreviation</p></div>
+            <button class="text-button" type="button" @onclick="ShareAsync">Share this forecast ↗</button>
         </div>
-        <div class="method"><strong>Read this comparison honestly:</strong> weather is local to @City.Name, while electricity use and price are statewide EIA household averages. Public data cannot explain your personal bill; city weather is a local climate proxy, not city-level household usage.</div>
-        <div class="hero-actions">
-            <a class="btn btn-dark" href="#quick-bill">Compare My Bill Against This Average</a>
-        </div>
-        <button class="text-button" type="button" @onclick="ShareAsync">Just browsing? Share this city snapshot.</button>
         @if (!string.IsNullOrWhiteSpace(_shareStatus)) { <p class="field-status">@_shareStatus</p> }
 
-        @if (StateEnergy is not null)
-        {
-            <div class="calculator" id="quick-bill">
-                <div>
-                    <span class="kicker">ONE-BILL QUICK CHECK</span><h2>Compare one bill before importing a full history.</h2>
-                    <p>Enter the bill total and, if available, its kWh. Without kWh, WattWeather estimates usage from the statewide residential rate.</p>
-                    <div class="input-grid">
-                        <label>Billing month<input type="month" @bind="_billingMonth" @bind:format="yyyy-MM" /></label>
-                        <label>Total cost ($)<input type="number" min="0" step="0.01" @bind="_billCost" /></label>
-                        <label>Usage (kWh, optional)<input type="number" min="0.01" step="0.01" @bind="_billKwh" /></label>
-                    </div>
-                    <button class="text-button sample-bill" type="button" @onclick="UseSampleBill">No bill handy? Use a sample $100 bill.</button>
-                    <button class="btn btn-dark quick-action" type="button" @onclick="CompareBill">See my comparison</button>
-                    @if (!string.IsNullOrWhiteSpace(_billError)) { <p class="field-status error">@_billError</p> }
-                </div>
-                <div class="result-card">
-                    @if (_comparison is null) { <span>YOUR RESULT</span><strong>Ready</strong><p>Your state average provides context—not a diagnosis.</p> }
-                    else
-                    {
-                        <span>YOUR RESULT</span><strong>@_comparison.Headline</strong>
-                        @if (_comparison.Band == BillComparisonBand.Near)
-                        {
-                            <p>Within @Math.Abs(_comparison.DifferencePercent).ToString("0")% of the statewide household average.</p>
-                        }
-                        else
-                        {
-                            <p>@Math.Abs(_comparison.DifferencePercent).ToString("0")% @(_comparison.DifferencePercent > 0 ? "above" : "below") the statewide household average.</p>
-                        }
-                        <p>@_comparison.Guidance</p>
-                        @if (_comparison.IsEstimated)
-                        {
-                            <p><b>Estimated:</b> @_comparison.KilowattHours.ToString("N0") kWh
-                                <span class="info-tooltip" tabindex="0" aria-label="Estimated kWh equals bill cost divided by the state average price per kilowatt-hour." data-tip="Bill cost ÷ state average price per kWh.">?</span>
-                            </p>
-                        }
-                        <p><b>One bill is not enough to establish a pattern.</b></p>
-                        <a class="btn btn-accent" href="energy">See my full personal chart</a>
-                    }
-                </div>
+        <div class="current-weather">
+            <article class="temperature-card">
+                <span class="giant-emoji">@WeatherPresentation.Emoji(Forecast.Current.WeatherCode, Forecast.Current.IsDay != 0)</span>
+                <strong>@Math.Round(Forecast.Current.Temperature)°F</strong>
+                <p>Feels like @Math.Round(Forecast.Current.FeelsLike)°F</p>
+                <small>H @TodayHigh° · L @TodayLow°</small>
+            </article>
+            <div class="weather-specs">
+                <article><span>💧 Humidity</span><strong>@Forecast.Current.Humidity.ToString("0")%</strong></article>
+                <article><span>💨 Wind</span><strong>@Forecast.Current.WindSpeed.ToString("0") mph @WeatherPresentation.WindDirection(Forecast.Current.WindDirection)</strong></article>
+                <article><span>☔ Rain now</span><strong>@Forecast.Current.Precipitation.ToString("0.00") in</strong></article>
+                <article><span>☁️ Cloud cover</span><strong>@Forecast.Current.CloudCover.ToString("0")%</strong></article>
+                <article><span>🌡️ Pressure</span><strong>@Forecast.Current.SurfacePressure.ToString("0") hPa</strong></article>
+                <article><span>🧴 UV index</span><strong>@TodayUv</strong></article>
+                <article><span>🌅 Sunrise</span><strong>@FormatTime(Forecast.Daily.Sunrises.ElementAtOrDefault(0))</strong></article>
+                <article><span>🌇 Sunset</span><strong>@FormatTime(Forecast.Daily.Sunsets.ElementAtOrDefault(0))</strong></article>
             </div>
-        }
+        </div>
+
+        <div class="forecast-heading"><span class="kicker">NEXT 7 DAYS</span><h2>Your week at a glance</h2></div>
+        <div class="forecast-grid">
+            @foreach (var day in ForecastDays)
+            {
+                <article class="forecast-card">
+                    <span>@day.Name</span>
+                    <b>@WeatherPresentation.Emoji(day.Code)</b>
+                    <strong>@day.High° <small>@day.Low°</small></strong>
+                    <p>@WeatherPresentation.Label(day.Code)</p>
+                    <small>☔ @day.RainChance% · 💨 @day.Wind mph</small>
+                </article>
+            }
+        </div>
+        <div class="weather-note">Forecast data from Open-Meteo. Conditions can change, so check local alerts during severe weather.</div>
     </section>
 }
-
-<section class="page-section">
-    <div class="section-intro"><span class="kicker">NEXT STEP</span><h2>Build evidence from your own daily use.</h2></div>
-    <div class="feature-grid">
-        <a class="feature-card" href="energy"><span>01 / MY ENERGY</span><h3>Does the pattern hold?</h3><p>Match private daily records to temperature and calculate correlation and unusual-use flags.</p><b>Analyze daily history →</b></a>
-        <a class="feature-card" href="architecture"><span>02 / HOW IT WORKS</span><h3>Review the engineering.</h3><p>See how Blazor, ASP.NET, Open-Meteo, EIA data, local storage, and validated C# analytics fit together.</p><b>Open architecture →</b></a>
-    </div>
-    <div class="method"><strong>How WattWeather works:</strong> Pearson correlation measures the direction and strength of a linear temperature–usage relationship. HDD/CDD65 totals degrees below or above 65°F. IQR flags unusually high records because it is robust to extremes and does not assume a normal distribution. Correlations and flags are context—not proof that weather caused a bill change.</div>
-</section>
 
 @code {
     [SupplyParameterFromQuery(Name = "city")] public string? SharedCity { get; set; }
     [SupplyParameterFromQuery(Name = "state")] public string? SharedState { get; set; }
-    private DateTime _billingMonth = DateTime.Today;
-    private decimal _billCost;
-    private double? _billKwh;
-    private BillComparison? _comparison;
     private string? _loadedShare;
-    private string? _billError;
     private string? _shareStatus;
-    private DemandEstimate Demand => EnergyCalculations.CalculateDemand(Forecast?.Current.FeelsLike ?? 65);
-    private string ShareTitle => City is null ? "WattWeather — Weather and electricity insight" : $"{City.Name} weather and electricity snapshot";
-    private string ShareDescription => City is null
-        ? "See whether weather may help explain your electric bill."
-        : $"{Math.Round(Forecast?.Current.Temperature ?? 0)}°F in {City.Name}; {Demand.Summary} Compare your bill with the {City.State} household average.";
+    private string ShareTitle => City is null ? "WattWeather — Simple, fun U.S. weather" : $"{City.Name} weather — WattWeather";
+    private string ShareDescription => City is null ? "Search any U.S. city or ZIP for current conditions and a seven-day forecast." : $"{Math.Round(Forecast?.Current.Temperature ?? 0)}°F and {WeatherPresentation.Label(Forecast?.Current.WeatherCode ?? 0)} in {City.Name}.";
+    private string WeatherMood => (Forecast?.Current.WeatherCode ?? 0) switch { 0 or 1 => "sunny", >= 71 and <= 77 => "snowy", >= 85 and <= 86 => "snowy", >= 95 => "stormy", >= 51 and <= 82 => "rainy", _ => "cloudy" };
+    private string TodayHigh => Math.Round(Forecast?.Daily.Highs.ElementAtOrDefault(0) ?? 0).ToString("0");
+    private string TodayLow => Math.Round(Forecast?.Daily.Lows.ElementAtOrDefault(0) ?? 0).ToString("0");
+    private string TodayUv => (Forecast?.Daily.UvIndex.ElementAtOrDefault(0) ?? 0).ToString("0.0");
+    private IEnumerable<ForecastDay> ForecastDays => Enumerable.Range(0, Math.Min(7, Forecast?.Daily.Dates.Count ?? 0)).Select(index => new ForecastDay(
+        index == 0 ? "Today" : DateTime.Parse(Forecast!.Daily.Dates[index]).ToString("ddd"),
+        Forecast!.Daily.WeatherCodes.ElementAtOrDefault(index),
+        Math.Round(Forecast.Daily.Highs.ElementAtOrDefault(index)).ToString("0"),
+        Math.Round(Forecast.Daily.Lows.ElementAtOrDefault(index)).ToString("0"),
+        Math.Round(Forecast.Daily.PrecipitationChance.ElementAtOrDefault(index)).ToString("0"),
+        Math.Round(Forecast.Daily.MaxWindSpeed.ElementAtOrDefault(index)).ToString("0")));
 
     protected override async Task OnParametersSetAsync()
     {
@@ -149,34 +117,19 @@
     }
 
     private async Task SelectCityAsync(CityLocation city) { await Location.SelectAsync(city); await LoadCityAsync(city); }
-    private void UseSampleBill()
-    {
-        _billCost = 100;
-        _billKwh = null;
-        CompareBill();
-    }
-    private void CompareBill()
-    {
-        _billError = null;
-        if (_billCost < 0 || (_billKwh.HasValue && _billKwh <= 0))
-        {
-            _comparison = null;
-            _billError = "Enter a bill cost of zero or more and a kWh value greater than zero.";
-            return;
-        }
-        try { _comparison = StateEnergy is null ? null : EnergyCalculations.CompareBill(_billCost, _billKwh, StateEnergy); }
-        catch (Exception) { _comparison = null; _billError = "This bill cannot be compared with the available state data."; }
-    }
     private async Task ShareAsync()
     {
         if (City is null) return;
-        var relative = EnergyCalculations.BuildPublicShareQuery(City);
-        var url = new Uri(new Uri(Navigation.BaseUri), relative).ToString();
+        var query = $"?city={Uri.EscapeDataString(City.Name)}&state={Uri.EscapeDataString(City.State ?? "")}";
+        var url = new Uri(new Uri(Navigation.BaseUri), query).ToString();
         try
         {
-            var result = await Js.InvokeAsync<string>("wattWeather.share", $"WattWeather: {City.Name}", "See this public weather and state energy snapshot.", url);
-            _shareStatus = result == "copied" ? "Public snapshot link copied. It contains only city and state." : null;
+            var result = await Js.InvokeAsync<string>("wattWeather.share", $"{City.Name} weather", ShareDescription, url);
+            _shareStatus = result == "copied" ? "Forecast link copied!" : null;
         }
-        catch (Exception) { _shareStatus = "Sharing is unavailable in this browser. Copy the page address instead."; }
+        catch { _shareStatus = "Sharing is unavailable. Copy the page address instead."; }
     }
+
+    private static string FormatTime(string? value) => DateTime.TryParse(value, out var time) ? time.ToString("h:mm tt") : "—";
+    private sealed record ForecastDay(string Name, int Code, string High, string Low, string RainChance, string Wind);
 }

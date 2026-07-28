@@ -8,9 +8,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.10" />
     <ProjectReference Include="..\app\WattWeather.App.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Update="Data\eia-state-energy.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>
