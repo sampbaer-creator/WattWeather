@@ -65,7 +65,14 @@
                     else
                     {
                         <span>YOUR RESULT</span><strong>@_comparison.Headline</strong>
-                        <p>@Math.Abs(_comparison.DifferencePercent).ToString("0")% @(_comparison.DifferencePercent >= 0 ? "above" : "below") the statewide household average.</p>
+                        @if (_comparison.Band == BillComparisonBand.Near)
+                        {
+                            <p>Within @Math.Abs(_comparison.DifferencePercent).ToString("0")% of the statewide household average.</p>
+                        }
+                        else
+                        {
+                            <p>@Math.Abs(_comparison.DifferencePercent).ToString("0")% @(_comparison.DifferencePercent > 0 ? "above" : "below") the statewide household average.</p>
+                        }
                         <p>@_comparison.Guidance</p>
                         @if (_comparison.IsEstimated) { <p><b>Estimated:</b> @_comparison.KilowattHours.ToString("N0") kWh from bill cost and state average rate.</p> }
                         <p><b>One bill is not enough to establish a pattern.</b></p>
