@@ -24,8 +24,6 @@ public sealed class WeatherForecast
     [JsonPropertyName("current")]
     public CurrentWeather Current { get; init; } = new();
 
-    [JsonPropertyName("daily")]
-    public DailyWeather Daily { get; init; } = new();
 }
 
 public sealed class CurrentWeather
@@ -44,21 +42,6 @@ public sealed class CurrentWeather
 
     [JsonPropertyName("wind_speed_10m")]
     public double WindSpeed { get; init; }
-}
-
-public sealed class DailyWeather
-{
-    [JsonPropertyName("time")]
-    public List<string> Dates { get; init; } = [];
-
-    [JsonPropertyName("temperature_2m_max")]
-    public List<double> Highs { get; init; } = [];
-
-    [JsonPropertyName("temperature_2m_min")]
-    public List<double> Lows { get; init; } = [];
-
-    [JsonPropertyName("shortwave_radiation_sum")]
-    public List<double> SolarRadiationMegajoules { get; init; } = [];
 }
 
 public sealed class HistoricalWeather
@@ -112,30 +95,10 @@ public sealed class StateEnergyHistory
     public double AverageMonthlyKwh { get; init; }
 }
 
-public sealed record SolarEstimate(
-    double DailySolarKwhPerSquareMeter,
-    double AnnualOutputKwh,
-    double AnnualBillValue,
-    int Score,
-    string Verdict,
-    string Explanation);
-
 public sealed record DemandEstimate(
     double HeatingPressure,
     double CoolingPressure,
     string Summary);
-
-public sealed record PowerProfile(
-    string Name,
-    string Category,
-    string Symbol,
-    string Description);
-
-public sealed record DiscountEstimate(
-    decimal Quote,
-    decimal ConfirmedDiscounts,
-    decimal NetCost,
-    decimal PercentReduction);
 
 public sealed class EnergyRecord
 {

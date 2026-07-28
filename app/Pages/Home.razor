@@ -8,8 +8,8 @@
 <section class="hero">
     <div class="hero-copy">
         <span class="kicker">WEATHER / ELECTRICITY INTELLIGENCE</span>
-        <h1>Does hot or cold weather explain <em>your electricity bill?</em></h1>
-        <p>Enter a U.S. city to see local weather alongside state electricity use and prices in seconds. No signup.</p>
+        <h1>Is the weather driving up <em>your electric bill?</em></h1>
+        <p>Check your city's climate pressure instantly—then see how your household stacks up.</p>
         <div class="hero-actions"><a class="btn btn-dark" href="#city">Explore my city <span>↓</span></a></div>
         <div class="proof"><span>Public data</span><span>No account</span><span>Plain English</span></div>
     </div>
@@ -38,14 +38,16 @@
         <div class="metric-grid">
             <article><span>Current temperature</span><strong>@Math.Round(Forecast.Current.Temperature)°F</strong><small>@EnergyCalculations.WeatherLabel(Forecast.Current.WeatherCode)</small></article>
             <article><span>Feels like</span><strong>@Math.Round(Forecast.Current.FeelsLike)°F</strong><small>local Open-Meteo weather</small></article>
+            <article><span>Heating pressure</span><strong>@Demand.HeatingPressure.ToString("0")°</strong><small>below the 65°F baseline</small></article>
+            <article><span>Cooling pressure</span><strong>@Demand.CoolingPressure.ToString("0")°</strong><small>above the 65°F baseline</small></article>
             <article><span>State home use</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.AverageMonthlyKwh:N0}")</strong><small>average kWh/month · EIA</small></article>
             <article><span>State home rate</span><strong>@(StateEnergy is null ? "—" : $"{StateEnergy.ResidentialPriceCents:0.00}¢")</strong><small>per kWh · EIA @StateEnergy?.Period</small></article>
         </div>
         <div class="method"><strong>Read this comparison honestly:</strong> weather is local to @City.Name, while electricity use and price are statewide EIA household averages. Public data cannot explain your personal bill; city weather is a local climate proxy, not city-level household usage.</div>
         <div class="hero-actions">
-            <button class="btn btn-dark" type="button" @onclick="ShareAsync">Share this snapshot</button>
-            <a class="btn btn-outline" href="#city">Compare another city</a>
+            <a class="btn btn-dark" href="#quick-bill">Compare My Bill Against This Average</a>
         </div>
+        <button class="text-button" type="button" @onclick="ShareAsync">Just browsing? Share this city snapshot.</button>
         @if (!string.IsNullOrWhiteSpace(_shareStatus)) { <p class="field-status">@_shareStatus</p> }
 
         @if (StateEnergy is not null)
@@ -87,14 +89,12 @@
 }
 
 <section class="page-section">
-    <div class="section-intro"><span class="kicker">SUPPORTING TOOLS</span><h2>Go deeper when you need to.</h2></div>
+    <div class="section-intro"><span class="kicker">NEXT STEP</span><h2>Build evidence from your own daily use.</h2></div>
     <div class="feature-grid">
         <a class="feature-card" href="energy"><span>01 / MY ENERGY</span><h3>Does the pattern hold?</h3><p>Match private daily records to temperature and calculate correlation and unusual-use flags.</p><b>Analyze daily history →</b></a>
-        <a class="feature-card" href="weather-impact"><span>02 / WEATHER</span><h3>Heating or cooling pressure?</h3><p>See HDD/CDD-style pressure relative to the 65°F baseline.</p><b>See weather impact →</b></a>
-        <a class="feature-card" href="solar"><span>03 / SOLAR SCREEN</span><h3>Is solar worth a quote?</h3><p>Use local sunlight for an early screening estimate—not a financial guarantee.</p><b>Explore solar →</b></a>
-        <a class="feature-card" href="discounts"><span>04 / GUIDANCE</span><h3>Where can I research help?</h3><p>Follow DSIRE and IRS guidance links and model only confirmed rebates.</p><b>Check guidance →</b></a>
+        <a class="feature-card" href="architecture"><span>02 / HOW IT WORKS</span><h3>Review the engineering.</h3><p>See how Blazor, ASP.NET, Open-Meteo, EIA data, local storage, and validated C# analytics fit together.</p><b>Open architecture →</b></a>
     </div>
-    <div class="method"><strong>How WattWeather works:</strong> Pearson correlation measures the direction and strength of a linear temperature–usage relationship. HDD/CDD65 totals degrees below or above 65°F. IQR flags unusually high records because it is robust to extremes and does not assume a normal distribution. Explainable linear regression is appropriate for estimates because limited household data does not justify an overfit-prone flexible model. Flags and forecasts are prompts and estimates—not proof.</div>
+    <div class="method"><strong>How WattWeather works:</strong> Pearson correlation measures the direction and strength of a linear temperature–usage relationship. HDD/CDD65 totals degrees below or above 65°F. IQR flags unusually high records because it is robust to extremes and does not assume a normal distribution. Correlations and flags are context—not proof that weather caused a bill change.</div>
 </section>
 
 @code {
@@ -107,6 +107,7 @@
     private string? _loadedShare;
     private string? _billError;
     private string? _shareStatus;
+    private DemandEstimate Demand => EnergyCalculations.CalculateDemand(Forecast?.Current.FeelsLike ?? 65);
 
     protected override async Task OnParametersSetAsync()
     {

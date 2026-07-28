@@ -3,13 +3,10 @@
     <button class="menu-toggle" type="button" @onclick="ToggleNavMenu" aria-label="Toggle navigation">Menu</button>
     <nav class="@NavMenuCssClass" @onclick="CloseMenu">
         <NavLink href="" Match="NavLinkMatch.All">Overview</NavLink>
-        <NavLink href="solar">Solar</NavLink>
-        <NavLink href="discounts">Discounts</NavLink>
-        <NavLink href="weather-impact">Weather</NavLink>
-        <NavLink href="power">Power</NavLink>
-        <NavLink href="energy">My energy</NavLink>
+        <NavLink href="energy">My Energy</NavLink>
+        <NavLink href="architecture">Architecture</NavLink>
     </nav>
-    <NavLink class="header-cta" href="solar">Check my city <span>↗</span></NavLink>
+    <NavLink class="header-cta" href="">Check my city <span>↗</span></NavLink>
 </header>
 
 @code {

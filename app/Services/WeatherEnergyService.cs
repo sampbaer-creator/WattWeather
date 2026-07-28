@@ -36,7 +36,7 @@ public sealed class WeatherEnergyService(HttpClient http)
     public async Task<WeatherForecast> GetForecastAsync(CityLocation city, CancellationToken cancellationToken = default)
     {
         var url = IsStaticHosting
-            ? $"https://api.open-meteo.com/v1/forecast?latitude={city.Latitude:R}&longitude={city.Longitude:R}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,shortwave_radiation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto"
+            ? $"https://api.open-meteo.com/v1/forecast?latitude={city.Latitude:R}&longitude={city.Longitude:R}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto"
             : $"api/weather?latitude={city.Latitude:R}&longitude={city.Longitude:R}";
         return await http.GetFromJsonAsync<WeatherForecast>(url, cancellationToken)
                ?? throw new InvalidOperationException("Weather data was empty.");

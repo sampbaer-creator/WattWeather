@@ -20,8 +20,7 @@ public sealed class OpenMeteoClient(HttpClient http, StateEnergyRepository state
     public async Task<WeatherForecast> GetForecastAsync(double latitude, double longitude, CancellationToken cancellationToken)
     {
         const string current = "temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m";
-        const string daily = "temperature_2m_max,temperature_2m_min,shortwave_radiation_sum";
-        var url = $"v1/forecast?latitude={latitude:R}&longitude={longitude:R}&current={current}&daily={daily}&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto";
+        var url = $"v1/forecast?latitude={latitude:R}&longitude={longitude:R}&current={current}&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto";
         return await http.GetFromJsonAsync<WeatherForecast>(url, cancellationToken)
                ?? throw new InvalidDataException("Open-Meteo returned an empty forecast.");
     }

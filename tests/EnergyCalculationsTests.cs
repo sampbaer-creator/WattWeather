@@ -5,28 +5,6 @@ namespace WattWeather.Tests;
 
 public sealed class EnergyCalculationsTests
 {
-    private readonly EnergyCalculations _calculations = new();
-
-    [Fact]
-    public void CalculateSolar_UsesRadiationEfficiencyAndLocalPrice()
-    {
-        var forecast = new WeatherForecast
-        {
-            Daily = new DailyWeather
-            {
-                SolarRadiationMegajoules = [18, 18, 18]
-            }
-        };
-        var state = new StateEnergy { ResidentialPriceCents = 20 };
-
-        var result = _calculations.CalculateSolar(forecast, state);
-
-        Assert.Equal(5, result.DailySolarKwhPerSquareMeter, 6);
-        Assert.Equal(8_760, result.AnnualOutputKwh, 6);
-        Assert.Equal(1_752, result.AnnualBillValue, 6);
-        Assert.InRange(result.Score, 0, 100);
-    }
-
     [Theory]
     [InlineData(40, 25, 0)]
     [InlineData(65, 0, 0)]
@@ -40,16 +18,6 @@ public sealed class EnergyCalculationsTests
 
         Assert.Equal(expectedHeating, result.HeatingPressure);
         Assert.Equal(expectedCooling, result.CoolingPressure);
-    }
-
-    [Fact]
-    public void CalculateDiscount_ClampsNegativeValuesAndNeverExceedsQuote()
-    {
-        var result = EnergyCalculations.CalculateDiscount(20_000, -500, 25_000);
-
-        Assert.Equal(20_000, result.ConfirmedDiscounts);
-        Assert.Equal(0, result.NetCost);
-        Assert.Equal(100, result.PercentReduction);
     }
 
     [Fact]
