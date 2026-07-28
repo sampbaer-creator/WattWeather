@@ -47,6 +47,58 @@ public sealed class EnergyCalculationsTests
         Assert.Null(result);
     }
 
+    [Fact]
+    public void Pearson_ReturnsNullWhenTemperatureHasNoVariance()
+    {
+        var result = EnergyCalculations.Pearson([(32, 10), (32, 20), (32, 30), (32, 1_000)]);
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void Pearson_RemainsFiniteWithHistoricFreezeOutlier()
+    {
+        var result = EnergyCalculations.Pearson(
+            [(-40, 140), (25, 90), (45, 65), (65, 45), (85, 80), (105, 130)]);
+
+        Assert.NotNull(result);
+        Assert.True(double.IsFinite(result.Value));
+        Assert.InRange(result.Value, -1, 1);
+    }
+
+    [Fact]
+    public void Summarize_IqrFlagsOneExtremeUsageDayWithoutOverflow()
+    {
+        EnergyRecord[] records =
+        [
+            new() { KilowattHours = 10 },
+            new() { KilowattHours = 11 },
+            new() { KilowattHours = 12 },
+            new() { KilowattHours = 13 },
+            new() { KilowattHours = 1_000_000 }
+        ];
+
+        var result = EnergyCalculations.Summarize(records);
+
+        Assert.Equal(1, result.UnusualRecordCount);
+        Assert.True(double.IsFinite(result.TotalKilowattHours));
+        Assert.True(double.IsFinite(result.AverageKilowattHours));
+    }
+
+    [Fact]
+    public void Summarize_IqrDoesNotFlagConstantUsage()
+    {
+        var records = Enumerable.Range(0, 7)
+            .Select(index => new EnergyRecord
+            {
+                Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-index)),
+                KilowattHours = 25
+            })
+            .ToArray();
+
+        Assert.Equal(0, EnergyCalculations.Summarize(records).UnusualRecordCount);
+    }
+
     [Theory]
     [InlineData(850, BillComparisonBand.Above, 26.3)]
     [InlineData(673, BillComparisonBand.Near, 0)]

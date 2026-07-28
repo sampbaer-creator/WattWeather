@@ -41,7 +41,7 @@ public partial class CityPicker : IAsyncDisposable
 
         try
         {
-            await Task.Delay(220, _searchCancellation.Token);
+            await Task.Delay(350, _searchCancellation.Token);
             IsBusy = true;
             Results = (await Api.SearchCitiesAsync(Query, _searchCancellation.Token)).ToList();
             Status = Results.Count == 0 ? "No matching cities found." : "";

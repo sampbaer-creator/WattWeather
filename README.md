@@ -24,6 +24,8 @@ WattWeather intentionally does not estimate solar ROI, roofs, tax credits, incen
 - Public data cannot diagnose an individual bill.
 - Personal energy records stay in browser `localStorage`.
 - Shared links contain only `city` and `state`.
+- The latest successfully loaded EIA dataset is cached locally and used when the state-data endpoint is temporarily unavailable.
+- City search waits 350 milliseconds after typing stops before calling Open-Meteo.
 
 ## Analytics
 
@@ -62,3 +64,7 @@ dotnet publish app/WattWeather.App.csproj -c Release
 ```
 
 Every push to `main` runs the .NET checks and deploys the Blazor application to GitHub Pages.
+
+## Social sharing
+
+The static GitHub Pages edition includes a polished default Open Graph card and updates the title and description in the browser for the selected city. Social crawlers generally do not execute Blazor WebAssembly, so truly city-specific crawler previews require the optional ASP.NET host or a future edge-rendered share endpoint.

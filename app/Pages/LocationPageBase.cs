@@ -30,6 +30,7 @@ public abstract class LocationPageBase : ComponentBase
         City = city;
         Loading = true;
         Error = null;
+        await InvokeAsync(StateHasChanged);
         try
         {
             var forecastTask = Api.GetForecastAsync(city);

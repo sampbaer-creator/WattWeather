@@ -1,10 +1,13 @@
 using System.Net.Http.Json;
+using System.Text.Json;
+using Microsoft.JSInterop;
 using WattWeather.App.Models;
 
 namespace WattWeather.App.Services;
 
-public sealed class WeatherEnergyService(HttpClient http)
+public sealed class WeatherEnergyService(HttpClient http, IJSRuntime js)
 {
+    private const string EiaCacheKey = "wattweather.eia.v1";
     private Task<EiaDataset?>? _eiaRequest;
     private bool IsStaticHosting =>
         http.BaseAddress?.Host.EndsWith(".github.io", StringComparison.OrdinalIgnoreCase) == true ||
@@ -49,9 +52,32 @@ public sealed class WeatherEnergyService(HttpClient http)
             return null;
         }
 
-        _eiaRequest ??= http.GetFromJsonAsync<EiaDataset>(
-            IsStaticHosting ? "data/eia-state-energy.json" : "api/states");
-        var dataset = await _eiaRequest;
+        EiaDataset? dataset;
+        try
+        {
+            _eiaRequest ??= http.GetFromJsonAsync<EiaDataset>(
+                IsStaticHosting ? "data/eia-state-energy.json" : "api/states");
+            dataset = await _eiaRequest;
+            if (dataset is not null)
+            {
+                await js.InvokeVoidAsync("localStorage.setItem", EiaCacheKey, JsonSerializer.Serialize(dataset));
+            }
+        }
+        catch
+        {
+            _eiaRequest = null;
+            try
+            {
+                var cached = await js.InvokeAsync<string?>("localStorage.getItem", EiaCacheKey);
+                dataset = string.IsNullOrWhiteSpace(cached)
+                    ? null
+                    : JsonSerializer.Deserialize<EiaDataset>(cached);
+            }
+            catch
+            {
+                dataset = null;
+            }
+        }
         return dataset?.States.GetValueOrDefault(state);
     }
 

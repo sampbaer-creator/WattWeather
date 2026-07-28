@@ -28,6 +28,23 @@
         </article>
     </div>
 
+    <section class="mobile-entry-panel">
+        <div><span class="kicker">MOBILE QUICK START</span><h2>Enter three days without a CSV.</h2><p>Tap through three simple rows. These records stay in this browser.</p></div>
+        <div class="manual-grid">
+            @for (var index = 0; index < _quickRecords.Count; index++)
+            {
+                var row = _quickRecords[index];
+                <article>
+                    <strong>Day @(index + 1)</strong>
+                    <label>Date<input type="date" @bind="row.Date" /></label>
+                    <label>kWh<input type="number" min="0.01" step="0.01" @bind="row.KilowattHours" /></label>
+                    <label>Cost ($)<input type="number" min="0" step="0.01" @bind="row.Cost" /></label>
+                </article>
+            }
+        </div>
+        <button class="btn btn-dark" type="button" @onclick="SaveQuickRecordsAsync">Save these three days</button>
+    </section>
+
     <div class="metric-grid">
         <article><span>Records</span><strong>@Summary.RecordCount</strong><small>browser-local entries</small></article>
         <article><span>Total usage</span><strong>@Summary.TotalKilowattHours.ToString("N1")</strong><small>kWh</small></article>
@@ -39,7 +56,7 @@
         <article class="correlation-panel"><span class="kicker">WEATHER CONNECTION</span><h2>Temperature correlation</h2><strong>@(Summary.TemperatureCorrelation?.ToString("0.00") ?? "—")</strong><p>Add at least three records with temperature to calculate Pearson's r.</p></article>
         <article><span class="kicker">DATA QUALITY</span><h2>@Summary.UnusualRecordCount unusual record(s)</h2><p>WattWeather uses the interquartile-range method to flag unusually high usage. A flag is a review prompt, not proof of an error.</p></article>
     </div>
-    <div class="method"><strong>Methods:</strong> Pearson's r measures linear temperature–usage association; it does not prove weather caused a bill change. IQR marks values above Q3 + 1.5 × IQR because it resists extreme observations and requires no normal-distribution assumption. HDD/CDD calculations elsewhere use a 65°F baseline. Any regression forecast is an estimate and requires enough daily data.</div>
+    <div class="method"><strong>Methods:</strong> Pearson's r measures linear temperature–usage association; it does not prove weather caused a bill change. IQR marks values above Q3 + 1.5 × IQR because it resists extreme observations and requires no normal-distribution assumption. HDD/CDD calculations use a 65°F baseline.</div>
 
     <div class="table-heading"><div><span class="kicker">YOUR RECORDS</span><h2>Recent energy use</h2></div>@if (Store.Records.Count > 0) { <button class="text-button" @onclick="ClearAsync">Clear all</button> }</div>
     <div class="table-wrap">
@@ -58,6 +75,12 @@
     private EnergyRecord _newRecord = new() { KilowattHours = 1 };
     private string _status = "";
     private bool _hasError;
+    private readonly List<EnergyRecord> _quickRecords =
+    [
+        new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-2)), KilowattHours = 1 },
+        new() { Date = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)), KilowattHours = 1 },
+        new() { Date = DateOnly.FromDateTime(DateTime.Today), KilowattHours = 1 }
+    ];
     private EnergySummary Summary => EnergyCalculations.Summarize(Store.Records);
 
     protected override async Task OnInitializedAsync() => await Store.LoadAsync();
@@ -68,6 +91,29 @@
         await Store.AddAsync(_newRecord);
         _newRecord = new EnergyRecord { KilowattHours = 1, Date = DateOnly.FromDateTime(DateTime.Today) };
         _status = "Record saved in this browser."; _hasError = false;
+    }
+
+    private async Task SaveQuickRecordsAsync()
+    {
+        if (_quickRecords.Any(record => record.KilowattHours <= 0) ||
+            _quickRecords.Select(record => record.Date).Distinct().Count() != 3)
+        {
+            _status = "Enter a positive kWh value and a different date for each day.";
+            _hasError = true;
+            return;
+        }
+
+        foreach (var record in _quickRecords)
+        {
+            await Store.AddAsync(new EnergyRecord
+            {
+                Date = record.Date,
+                KilowattHours = record.KilowattHours,
+                Cost = record.Cost
+            });
+        }
+        _status = "Saved three daily records in this browser.";
+        _hasError = false;
     }
 
     private async Task ImportCsvAsync(InputFileChangeEventArgs args)
