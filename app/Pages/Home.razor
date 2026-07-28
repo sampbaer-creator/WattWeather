@@ -46,6 +46,7 @@
             <button class="btn btn-dark" type="button" @onclick="ShareAsync">Share this snapshot</button>
             <a class="btn btn-outline" href="#city">Compare another city</a>
         </div>
+        @if (!string.IsNullOrWhiteSpace(_shareStatus)) { <p class="field-status">@_shareStatus</p> }
 
         @if (StateEnergy is not null)
         {
@@ -59,6 +60,7 @@
                         <label>Usage (kWh, optional)<input type="number" min="0.01" step="0.01" @bind="_billKwh" /></label>
                     </div>
                     <button class="btn btn-dark quick-action" type="button" @onclick="CompareBill">See my comparison</button>
+                    @if (!string.IsNullOrWhiteSpace(_billError)) { <p class="field-status error">@_billError</p> }
                 </div>
                 <div class="result-card">
                     @if (_comparison is null) { <span>YOUR RESULT</span><strong>Ready</strong><p>Your state average provides context—not a diagnosis.</p> }
@@ -103,6 +105,8 @@
     private double? _billKwh;
     private BillComparison? _comparison;
     private string? _loadedShare;
+    private string? _billError;
+    private string? _shareStatus;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -116,12 +120,28 @@
     }
 
     private async Task SelectCityAsync(CityLocation city) { await Location.SelectAsync(city); await LoadCityAsync(city); }
-    private void CompareBill() => _comparison = StateEnergy is null ? null : EnergyCalculations.CompareBill(_billCost, _billKwh, StateEnergy);
+    private void CompareBill()
+    {
+        _billError = null;
+        if (_billCost < 0 || (_billKwh.HasValue && _billKwh <= 0))
+        {
+            _comparison = null;
+            _billError = "Enter a bill cost of zero or more and a kWh value greater than zero.";
+            return;
+        }
+        try { _comparison = StateEnergy is null ? null : EnergyCalculations.CompareBill(_billCost, _billKwh, StateEnergy); }
+        catch (Exception) { _comparison = null; _billError = "This bill cannot be compared with the available state data."; }
+    }
     private async Task ShareAsync()
     {
         if (City is null) return;
         var relative = EnergyCalculations.BuildPublicShareQuery(City);
         var url = new Uri(new Uri(Navigation.BaseUri), relative).ToString();
-        await Js.InvokeVoidAsync("wattWeather.share", $"WattWeather: {City.Name}", "See this public weather and state energy snapshot.", url);
+        try
+        {
+            var result = await Js.InvokeAsync<string>("wattWeather.share", $"WattWeather: {City.Name}", "See this public weather and state energy snapshot.", url);
+            _shareStatus = result == "copied" ? "Public snapshot link copied. It contains only city and state." : null;
+        }
+        catch (JSException) { _shareStatus = "Sharing is unavailable in this browser. Copy the page address instead."; }
     }
 }
