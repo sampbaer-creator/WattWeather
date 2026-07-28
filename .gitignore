@@ -17,3 +17,4 @@ web-run*.log
 TestResults/
 coverage/
 artifacts/
+tmp/

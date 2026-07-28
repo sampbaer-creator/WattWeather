@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="How WattWeather's deployed website, public data, private browser records, and .NET portfolio architecture fit together.">
+  <title>How WattWeather Works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="pages-extra.css">
+</head>
+<body>
+  <header>
+    <a class="brand" href="index.html"><b>W</b> WattWeather</a>
+    <nav><a href="#deployed">Live architecture</a><a href="#data">Data flow</a><a href="#dotnet">.NET architecture</a></nav>
+    <a class="pill dark" href="index.html">Open WattWeather →</a>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <span class="eyebrow">TECHNICAL OVERVIEW</span>
+        <h1>How WattWeather <em>works.</em></h1>
+        <p>The deployed website is intentionally simple and privacy-conscious. This page separates what runs live on GitHub Pages from the additional .NET architecture included in the repository.</p>
+        <div class="actions"><a class="pill dark" href="#deployed">See the live architecture →</a><a class="pill outline" href="https://github.com/sampbaer-creator/WattWeather">View source</a></div>
+      </div>
+      <div class="visual">
+        <div class="sun"></div>
+        <article class="float weather"><small>LIVE RUNTIME</small><div><strong>JS</strong></div><span>Static HTML, CSS, and JavaScript</span></article>
+        <article class="float usage"><small>PRIVATE USER DATA</small><strong>localStorage</strong><span>Records remain in the browser</span></article>
+        <span class="live">● Accurate deployment map</span>
+      </div>
+    </section>
+
+    <section id="deployed" class="section cream">
+      <span class="eyebrow">DEPLOYED GITHUB PAGES EDITION</span>
+      <h2>The live path is <em>static.</em></h2>
+      <p>No ASP.NET server or Blazor WebAssembly runtime is deployed on GitHub Pages. The browser loads static files and requests public data directly.</p>
+      <ol class="flow-list">
+        <li><strong>GitHub Pages</strong> serves static HTML, CSS, JavaScript, and the non-sensitive EIA JSON snapshot.</li>
+        <li><strong>Open-Meteo</strong> receives browser requests for city search, current weather, forecasts, solar conditions, and historical temperature.</li>
+        <li><strong>U.S. EIA data</strong> is refreshed by a scheduled workflow using a protected repository secret. The secret is never sent to the website.</li>
+        <li><strong>Personal energy records</strong> remain in browser localStorage and are processed in the browser.</li>
+        <li><strong>Charts and estimates</strong> are generated locally and labeled as associations or estimates, not guaranteed causes.</li>
+      </ol>
+    </section>
+
+    <section id="data" class="section">
+      <span class="eyebrow">DATA SOURCES & LIMITS</span>
+      <h2>What feeds each <em>result?</em></h2>
+      <div class="architecture-grid">
+        <article><h3>Open-Meteo</h3><p>City geocoding, current conditions, seven-day forecasts, solar radiation, and historical daily temperature.</p><a href="https://open-meteo.com/">View source documentation →</a></article>
+        <article><h3>U.S. EIA</h3><p>Statewide residential electricity price, customers, and sales. WattWeather derives average monthly household usage from annual sales and customer counts.</p><a href="https://www.eia.gov/opendata/">View EIA Open Data →</a></article>
+        <article><h3>User utility records</h3><p>Optional cost and kWh records entered manually or imported from CSV. They stay in the current browser unless the user clears browser storage.</p></article>
+        <article><h3>Important limitation</h3><p>Public electricity values are statewide averages. City weather provides local climate context, but city-level household meter data is not publicly available.</p></article>
+      </div>
+    </section>
+
+    <section id="dotnet" class="section cream">
+      <span class="eyebrow">AVAILABLE IN THE REPOSITORY · NOT THE PAGES RUNTIME</span>
+      <h2>The additional <em>.NET architecture.</em></h2>
+      <p>The repository also demonstrates C#, .NET MAUI, Blazor, SQLite, Entity Framework Core, dependency injection, typed HTTP services, repositories, testing, statistics, and forecasting. This work is real, but it is separate from the static GitHub Pages runtime.</p>
+      <div class="architecture-grid">
+        <article><h3>Core</h3><p>Domain models, validation, statistical calculations, anomaly detection, degree days, and forecasting safeguards.</p></article>
+        <article><h3>Infrastructure</h3><p>SQLite persistence, Entity Framework Core, repository implementations, API integration, and repeatable initialization.</p></article>
+        <article><h3>Applications</h3><p>A cross-platform .NET MAUI client and a Blazor web project consume the shared domain and infrastructure layers.</p></article>
+        <article><h3>Tests</h3><p>Deterministic tests cover validation, calculations, anomaly behavior, repositories, and database initialization without requiring live APIs.</p></article>
+      </div>
+      <div class="plain-note"><strong>Not currently live:</strong><p>No secure ASP.NET backend, DSIRE integration, IRS guidance, solar financial-suitability screening, account system, or notification service is deployed.</p></div>
+    </section>
+  </main>
+  <footer><strong>WattWeather</strong><span>Architecture documented without overstating the live deployment.</span><a href="index.html">Back to the app →</a></footer>
+</body>
+</html>

@@ -11,7 +11,7 @@
 
 WattWeather combines live city weather, public electricity statistics, and optional personal utility records to explain how temperature relates to electricity use and cost.
 
-**[Explore public data](https://sampbaer-creator.github.io/WattWeather/)** · **[Analyze your energy](https://sampbaer-creator.github.io/WattWeather/energy.html)** · **[View the model card](docs/model-card.md)**
+**[Explore a city](https://sampbaer-creator.github.io/WattWeather/)** · **[Compare your electricity use](https://sampbaer-creator.github.io/WattWeather/energy.html)** · **[See how it works](https://sampbaer-creator.github.io/WattWeather/architecture.html)**
 
 </div>
 
@@ -43,6 +43,8 @@ Questions and improvement ideas are welcome in [GitHub Discussions](https://gith
 - Ten-year EIA price and household-usage trends
 - Ten-year comparison between selected-city temperature and state residential use
 - Plain-language explanations of correlation and data limitations
+- One-bill comparison with above, near, or below-state-average outcomes
+- Compare-another-city and share-snapshot actions
 
 ## Your Energy workspace
 
@@ -69,6 +71,7 @@ WattWeather accepts `date` and `kwh`; `cost` is optional.
 date,kwh,cost
 2026-01-01,24.5,3.55
 2026-01-02,27.1,3.93
+2026-01-03,25.8,3.74
 ```
 
 ## Data sources
@@ -204,6 +207,7 @@ This project began as a basic .NET MAUI assignment that searched OpenWeather by 
 - [Power BI and Azure roadmap](docs/bi-azure-roadmap.md)
 - [Roadmap, lessons learned, and resume bullets](docs/roadmap.md)
 - [Contribution guide](CONTRIBUTING.md)
+- [Live architecture explanation](https://sampbaer-creator.github.io/WattWeather/architecture.html)
 
 ## Current limitations
 

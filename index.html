@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Explore local weather, solar conditions, and public electricity statistics with WattWeather.">
-  <title>WattWeather — City Weather & Electricity</title>
+  <meta name="description" content="See whether weather helps explain electricity use in your area, then compare your own bill privately.">
+  <title>WattWeather — Weather & Electricity, Explained</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
@@ -14,16 +14,16 @@
 <body>
   <header>
     <a class="brand" href="index.html"><b>W</b> WattWeather</a>
-    <nav><a href="#overview">Overview</a><a href="#city">City data</a><a href="#insights">Charts</a><a href="energy.html">Your Energy</a></nav>
-    <a class="pill dark" href="energy.html">Analyze your usage →</a>
+    <nav><a href="#overview">Overview</a><a href="#city">City data</a><a href="#insights">Charts</a><a href="architecture.html">How it works</a></nav>
+    <a class="pill dark" href="#city">Explore my city →</a>
   </header>
   <main>
     <section id="overview" class="hero">
       <div>
-        <span class="eyebrow">PUBLIC WEATHER & ELECTRICITY DATA</span>
-        <h1>Understand your city<br>through <em>real data.</em></h1>
-        <p>Choose a city to explore current weather, the seven-day outlook, solar conditions, and public state electricity trends.</p>
-        <div class="actions"><a class="pill dark" href="#city">Choose a city →</a><a class="pill outline" href="energy.html">Use your own energy data</a></div>
+        <span class="eyebrow">WEATHER & ELECTRICITY, EXPLAINED</span>
+        <h1>Does weather help explain <em>electricity use?</em></h1>
+        <p>Enter your city to see local weather and electricity patterns in about 10 seconds—no signup required.</p>
+        <div class="actions"><a class="pill dark" href="#city">Explore my city →</a><a id="returning-energy-link" class="pill outline" href="energy.html" hidden>Skip to my energy records</a></div>
         <div class="trust"><span>✓ Free public APIs</span><span>✓ No account needed</span><span>✓ Easy-to-read charts</span></div>
       </div>
       <div class="visual">
@@ -41,11 +41,11 @@
     </section>
 
     <section id="city" class="section">
-      <span class="eyebrow">CHOOSE A LOCATION</span><h2>What is happening in <em>your city?</em></h2>
-      <p>Start typing a city and select it from the menu. The dashboard will update with that location’s data.</p>
+      <span class="eyebrow">STEP 1 · PUBLIC SNAPSHOT</span><h2>Explore a <em>U.S. city.</em></h2>
+      <p>Search for a U.S. city and choose it from the menu. Duplicate city names include their state so you can select the right place.</p>
       <form id="public-city-form" class="search">
         <div class="city-picker"><input id="public-city" autocomplete="off" placeholder="Start typing, e.g. Salt Lake City"><div id="public-suggestions" class="city-suggestions" hidden></div></div>
-        <button class="pill dark">Load city dashboard →</button>
+        <button class="pill dark">Explore my city →</button>
       </form>
       <p id="public-error" class="error" hidden></p>
       <article class="current-weather">
@@ -57,6 +57,12 @@
         <article><small>STATE HOME USAGE</small><strong id="public-usage">—</strong><span id="public-usage-note">EIA monthly average</span></article>
         <article><small>SOLAR CONDITIONS TODAY</small><strong id="public-solar">—</strong><span>sunlight energy per square meter</span></article>
       </div>
+      <div id="public-result-actions" class="result-actions" hidden>
+        <button id="compare-city" class="pill outline" type="button">Compare another city</button>
+        <button id="share-snapshot" class="pill outline" type="button">Share this snapshot</button>
+        <a class="pill dark" href="#quick-compare">Compare one bill →</a>
+      </div>
+      <p class="data-limit"><strong>Important data limitation:</strong> Electricity comparisons use statewide household averages. City-level household electricity measurements are not publicly available.</p>
     </section>
 
     <section id="insights" class="section cream">
@@ -69,11 +75,34 @@
         <article class="chart"><h3>State average home electricity use</h3><small>Average kWh per month by year from EIA</small><div id="state-usage-chart" class="public-chart empty-chart">Choose a U.S. city above</div></article>
         <article class="chart"><h3>Weather and state electricity use</h3><div class="state-correlation"><strong id="public-correlation">—</strong><span id="public-correlation-note">Choose a U.S. city to compare yearly temperature with state home electricity use.</span></div></article>
       </div>
-      <div class="plain-note"><strong>What does the connection score mean?</strong><p>A score near 1 or -1 means weather and electricity use changed together more often. A score near 0 means the connection was weak. This does not prove weather caused the change.</p></div>
+      <div class="plain-note"><strong>What does the connection score mean?</strong><p>This is a Pearson correlation between annual city temperature and statewide average household electricity use. A score near 1 or -1 means they changed together more often; a score near 0 means the relationship was weak. Correlation does not prove that weather caused the change.</p></div>
+      <details class="how-panel">
+        <summary>How these public results work</summary>
+        <div><p><a href="https://open-meteo.com/">Open-Meteo</a> supplies city search, current weather, forecasts, solar conditions, and historical temperature. A published <a href="https://www.eia.gov/opendata/">U.S. EIA</a> snapshot supplies statewide residential prices and usage.</p><p>The comparison pairs annual city temperature with statewide average household electricity use. It is historical context—not a personal bill analysis or proof of cause.</p></div>
+      </details>
     </section>
-    <section class="personal-cta"><span class="eyebrow">YOUR PRIVATE DATA</span><h2>Want to understand <em>your own bill?</em></h2><p>Import a utility CSV or enter daily use on a separate page. Your records stay in your browser.</p><a class="pill dark" href="energy.html">Open Your Energy →</a></section>
+    <section id="quick-compare" class="section quick-compare">
+      <span class="eyebrow">STEP 2 · QUICK PERSONAL COMPARISON</span>
+      <h2>How does one bill <em>compare?</em></h2>
+      <p>Choose your city above, then enter one recent monthly bill. You will get an immediate comparison before deciding whether to add your full history.</p>
+      <div class="quick-grid">
+        <form id="quick-bill-form" class="quick-form">
+          <label>Billing month<input id="quick-month" type="month" required></label>
+          <label>Total bill cost<input id="quick-cost" type="number" min="0.01" step="0.01" placeholder="$" required></label>
+          <label>Electricity used (kWh)<input id="quick-kwh" type="number" min="0.01" step="0.01" placeholder="Optional"></label>
+          <button class="pill dark">Compare my electricity use →</button>
+          <small>If kWh is omitted, WattWeather estimates it from your cost and the state average residential rate.</small>
+        </form>
+        <article id="quick-result" class="quick-result" aria-live="polite">
+          <span class="eyebrow">YOUR RESULT</span>
+          <h3>Load a U.S. city, then enter one bill.</h3>
+          <p>Nothing is uploaded. This quick comparison stays on your device.</p>
+        </article>
+      </div>
+    </section>
+    <section class="personal-cta"><span class="eyebrow">STEP 3 · FIND THE PATTERN</span><h2>One bill is a clue.<br><em>Your history tells the story.</em></h2><p>Import several months of utility history to see trends, temperature correlation, unusual usage, and forecast estimates. Your records stay in your browser.</p><a class="pill dark" href="energy.html">Find the pattern in my full history →</a></section>
   </main>
-  <footer><strong>WattWeather</strong><span>Public data from Open-Meteo and the U.S. Energy Information Administration.</span><a href="https://github.com/sampbaer-creator/WattWeather">View source ↗</a></footer>
+  <footer><strong>WattWeather</strong><span>Public data from Open-Meteo and the U.S. Energy Information Administration.</span><span><a href="architecture.html">Architecture</a> · <a href="https://github.com/sampbaer-creator/WattWeather">Source ↗</a></span></footer>
   <script src="landing.js"></script>
 </body>
 </html>
