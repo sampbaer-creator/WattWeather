@@ -24,14 +24,30 @@
       <p class="form-status" data-form-status>Solar estimates use public weather data and a standard 6 kW system assumption.</p>
     </section>
     <section class="report-shell">
-      <div class="metric-row">
+      <div class="metric-row solar-metrics">
         <article><span>Today’s solar resource</span><strong id="solar-today">—</strong><small>kWh/m²</small></article>
         <article><span>7-day daily average</span><strong id="solar-average">—</strong><small>kWh/m²/day</small></article>
+        <article><span>Typical panel layout</span><strong id="solar-panel-count">15 panels</strong><small>400 W per panel</small></article>
         <article><span>Est. 6 kW annual output</span><strong id="solar-output">—</strong><small>screening estimate</small></article>
         <article><span>Est. annual bill value</span><strong id="solar-savings">—</strong><small id="solar-rate-note">using state home rate</small></article>
       </div>
       <div class="report-grid">
         <article class="report-card span-two"><div class="card-heading"><div><span class="eyebrow">NEXT 7 DAYS</span><h2>Sunshine forecast</h2></div><span class="legend-dot">Daily solar resource</span></div><div id="solar-bars" class="solar-bars"><div class="empty-state">Choose a city to build the forecast.</div></div></article>
+        <article class="report-card span-two panel-explainer">
+          <div class="panel-copy">
+            <span class="eyebrow">SOLAR POWER + PANELS</span>
+            <h2>About 15 panels make a 6 kW home system.</h2>
+            <p>Each 400-watt panel converts sunlight into direct-current electricity. An inverter turns that into the alternating current used by your home. WattWeather applies an 80% system-efficiency factor for heat, wiring, inverter, shade, and other real-world losses.</p>
+            <div class="panel-facts"><span><b>400 W</b>per panel</span><span><b>6.0 kW</b>total array</span><span><b>80%</b>system factor</span></div>
+            <a class="button button-violet" href="https://www.solar-estimate.org/savings-calculator?aff=209744&amp;cam=963&amp;aid=&amp;gid=1322714865355577&amp;cid=662848957&amp;tid=kwd-82670765868074%3Aloc-116006&amp;kw=solar%20tax%20credit&amp;mt=b&amp;lo=96081&amp;msclkid=8791c25c77221bf41753a8347b61267a&amp;utm_source=bing&amp;utm_medium=cpc&amp;utm_campaign=SRCH%20%5BUSA%20Low%20ROAS%20A%20Counties%20CPU%2FMOB%2FTAB%20%2470%20tCPA%2C%20%2410%20CPC%5D&amp;utm_term=solar%20tax%20credit&amp;utm_content=solar%20tax%20credit%20-%20phrase" target="_blank" rel="sponsored noopener noreferrer">Get a detailed solar estimate <span>↗</span></a>
+            <small class="external-note">Opens an external Solar-Estimate.org calculator for roof, cost, and savings details.</small>
+          </div>
+          <div class="panel-array" aria-label="Illustration of 15 solar panels">
+            <span class="sun-ray">☀</span>
+            <div><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <strong>15 × 400 W panels</strong>
+          </div>
+        </article>
         <article class="report-card"><span class="eyebrow">WHAT THE SCORE MEANS</span><h2 id="solar-answer">Start with a city.</h2><p id="solar-explanation">A higher score means the recent solar outlook and local electricity price make rooftop solar more promising.</p><div class="score-scale"><span>Conditional</span><i><b id="score-marker"></b></i><span>Strong</span></div></article>
         <article class="report-card"><span class="eyebrow">BEFORE YOU BUY</span><h2>Sunlight is only step one.</h2><ul class="check-list"><li>Check roof direction, shade, and age.</li><li>Compare net-metering and utility rules.</li><li>Get multiple quotes with the same system size.</li><li>Verify tax incentives with an eligible professional.</li></ul></article>
       </div>
