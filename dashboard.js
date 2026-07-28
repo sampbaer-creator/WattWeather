@@ -5,6 +5,7 @@ const page = document.body.dataset.page;
 let selectedCity = loadLocation();
 let cityResults = [];
 let searchTimer;
+let searchController;
 let eiaData;
 
 const sourceProfiles = {
@@ -49,7 +50,9 @@ function pearson(rows){if(rows.length<3)return null;const mx=rows.reduce((s,r)=>
 
 async function findCities(term){
   if(term.trim().length<2){cityResults=[];return showSuggestions()}
-  const response=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=8&language=en&format=json`);
+  searchController?.abort();
+  searchController=new AbortController();
+  const response=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(term)}&count=8&language=en&format=json`,{signal:searchController.signal});
   if(!response.ok)throw Error("City search is temporarily unavailable.");
   cityResults=(await response.json()).results||[];
   showSuggestions();
@@ -63,7 +66,7 @@ function showSuggestions(){
 function setupLocationForms(){
   $$("[data-city-input]").forEach(input=>{
     if(selectedCity)input.value=cityLabel(selectedCity);
-    input.addEventListener("input",event=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>findCities(event.target.value).catch(showError),220)});
+    input.addEventListener("input",event=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>findCities(event.target.value).catch(error=>{if(error.name!=="AbortError")showError(error)}),220)});
     input.addEventListener("keydown",event=>{
       const menu=event.target.closest("form").querySelector("[data-city-suggestions]");
       const buttons=[...menu.querySelectorAll("button")];if(!buttons.length)return;
@@ -113,6 +116,11 @@ async function getWeather(city){
 }
 async function loadDashboard(){
   if(!selectedCity)return;
+  if(page==="incentives"){
+    renderIncentives();
+    showStatus(`Showing ${selectedCity.admin1 || selectedCity.name}. Verify each program before adding it to the estimate.`);
+    return;
+  }
   showStatus(`Loading weather and electricity data for ${cityLabel(selectedCity)}…`);
   const [weather,eia]=await Promise.all([getWeather(selectedCity),getEia()]);
   const state=eia.states?.[selectedCity.admin1];
@@ -122,6 +130,29 @@ async function loadDashboard(){
   if(page==="impact")await renderImpact(weather,state);
   if(page==="power")renderPower(state);
   showStatus(`Showing ${cityLabel(selectedCity)}. Data updates when you change cities.`);
+}
+function renderIncentives(){
+  const state=selectedCity?.admin1;
+  if(!state)return;
+  setText("#incentive-state-title",`Search programs available in ${state}.`);
+  const link=$("#dsire-link");
+  if(link)link.setAttribute("aria-label",`Search DSIRE for solar programs in ${state}`);
+}
+function setupDiscountCalculator(){
+  const inputs=["#quote-cost","#state-rebate","#utility-rebate"].map(selector=>$(selector)).filter(Boolean);
+  if(!inputs.length)return;
+  const money=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+  const update=()=>{
+    const [quote=0,stateRebate=0,utilityRebate=0]=inputs.map(input=>Math.max(0,Number(input.value)||0));
+    const discount=Math.min(quote,stateRebate+utilityRebate);
+    const net=Math.max(0,quote-discount);
+    const percent=quote?Math.round(discount/quote*100):0;
+    setText("#net-cost",money.format(net));
+    setText("#discount-total",money.format(discount));
+    setText("#discount-percent",`${percent}%`);
+  };
+  inputs.forEach(input=>input.addEventListener("input",update));
+  update();
 }
 function renderHome(weather,state,solar){
   const current=weather.current;
@@ -193,4 +224,5 @@ function renderPower(state){
 }
 
 setupLocationForms();
+setupDiscountCalculator();
 if(selectedCity)loadDashboard().catch(showError);
